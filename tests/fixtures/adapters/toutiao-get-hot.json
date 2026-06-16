@@ -1,0 +1,27 @@
+{
+  "command": "toutiao/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "params": { "channel": "热点" },
+  "data": {
+    "channel": "热点",
+    "items": [
+      {
+        "rank": 1,
+        "title": "3280元眼镜进货价仅126元",
+        "hotValue": "18354377",
+        "label": "",
+        "url": "https://www.toutiao.com/trending/7651086991836626985/",
+        "clusterId": "7651086991836627000"
+      },
+      {
+        "rank": 2,
+        "title": "神舟二十号乘组第二次出舱",
+        "hotValue": "12451234",
+        "label": "hot",
+        "url": "https://www.toutiao.com/trending/7651086991836626986/",
+        "clusterId": "7651086991836627001"
+      }
+    ]
+  }
+}

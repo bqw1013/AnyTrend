@@ -1,0 +1,30 @@
+{
+  "command": "qbitai/get-latest",
+  "success": true,
+  "meta": { "duration": 2500 },
+  "data": {
+    "articles": [
+      {
+        "rank": 1,
+        "title": "89年哈工程校友，拿下全球海洋机器人领域最大单轮融资",
+        "url": "https://www.qbitai.com/2026/06/435804.html",
+        "summary": "上半年订单金额已超10亿",
+        "author": "量子位",
+        "authorUrl": "https://www.qbitai.com/?author=19",
+        "time": "34分钟前",
+        "tags": [
+          { "name": "具身智能", "url": "https://www.qbitai.com/tag/1" },
+          { "name": "哈工程", "url": "https://www.qbitai.com/tag/2" },
+          { "name": "海洋机器人", "url": "https://www.qbitai.com/tag/3" }
+        ]
+      },
+      {
+        "rank": 2,
+        "title": "",
+        "url": "https://www.qbitai.com/2026/06/435803.html",
+        "summary": "空标题条目应被跳过",
+        "tags": []
+      }
+    ]
+  }
+}

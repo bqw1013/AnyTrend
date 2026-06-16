@@ -1,0 +1,35 @@
+{
+  "command": "replicate/get-trending",
+  "success": true,
+  "meta": { "duration": 3456 },
+  "data": {
+    "sections": [
+      {
+        "name": "featured",
+        "label": "Featured",
+        "models": [
+          {
+            "owner": "krea",
+            "name": "krea-2-medium",
+            "displayName": "krea-2-medium",
+            "description": "Foundation image model from Krea, tuned for expressive illustration, anime, and painterly styles.",
+            "runs": "3.8K runs",
+            "isOfficial": true,
+            "coverImage": "https://tjzk.replicate.delivery/models_models_featured_image/xxx.png",
+            "url": "https://replicate.com/krea/krea-2-medium"
+          },
+          {
+            "owner": "black-forest-labs",
+            "name": "flux-2-pro",
+            "displayName": "FLUX.2 [pro]",
+            "description": "",
+            "runs": "",
+            "isOfficial": false,
+            "coverImage": "https://static.replicateassets.com/xxx.jpg",
+            "url": "https://replicate.com/black-forest-labs/flux-2-pro"
+          }
+        ]
+      }
+    ]
+  }
+}

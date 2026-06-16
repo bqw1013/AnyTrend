@@ -1,0 +1,28 @@
+{
+  "command": "bilibili/get-hot",
+  "success": true,
+  "meta": { "duration": 320 },
+  "data": {
+    "count": 10,
+    "items": [
+      {
+        "rank": 1,
+        "keyword": "周杰伦女儿殿下MV上线",
+        "show_name": "周杰伦女儿殿下MV上线",
+        "heat_score": 3316985,
+        "heat_layer": "A",
+        "word_type": 5,
+        "icon": "http://i0.hdslb.com/bfs/activity-plat/static/20221213/eaf2dd702d7cc14d8d9511190245d057/lrx9rnKo24.png"
+      },
+      {
+        "rank": 2,
+        "keyword": "二次元某话题",
+        "show_name": "",
+        "heat_score": 1250000,
+        "heat_layer": "B",
+        "word_type": 4,
+        "icon": ""
+      }
+    ]
+  }
+}

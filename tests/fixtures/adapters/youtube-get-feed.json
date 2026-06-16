@@ -1,0 +1,32 @@
+{
+  "command": "youtube/get-feed",
+  "success": true,
+  "meta": { "duration": 3210 },
+  "data": {
+    "count": 3,
+    "items": [
+      {
+        "rank": 1,
+        "videoId": "WuMlsfKeWHc",
+        "title": "【Loop Engineering 循环工程】从理论到实践，它真的适合每个人吗？",
+        "channel": "01Coder",
+        "channelUrl": "/@01coder30",
+        "views": "5468次观看",
+        "publishedTime": "2天前",
+        "duration": "13:51",
+        "videoUrl": "https://www.youtube.com/watch?v=WuMlsfKeWHc"
+      },
+      {
+        "rank": 2,
+        "videoId": "s5T5oQJcJ6U",
+        "title": "Learn anything with the /teach skill",
+        "channel": "Matt Pocock",
+        "channelUrl": "/@mattpocockuk",
+        "views": "7.7万次观看",
+        "publishedTime": "6天前",
+        "duration": "13:05",
+        "videoUrl": "https://www.youtube.com/watch?v=s5T5oQJcJ6U"
+      }
+    ]
+  }
+}

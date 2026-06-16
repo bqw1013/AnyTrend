@@ -1,0 +1,32 @@
+{
+  "command": "reddit/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "sort": "hot",
+    "limit": 5,
+    "total": 5,
+    "posts": [
+      {
+        "rank": 1,
+        "title": "Washburn High School teacher took tech out of the classroom. Students call it a success.",
+        "subreddit": "r/technology",
+        "score": 11311,
+        "num_comments": 252,
+        "author": "Silent-Resort-3076",
+        "permalink": "https://www.reddit.com/r/technology/comments/1u61fal/washburn_high_school_teacher_took_tech_out_of_the/",
+        "url": "https://www.kare11.com/article/news/local/breaking-the-news/washburn-high-school-teacher-took-tech-out-of-the-classroom-students-call-it-a-success/89-1bad3ae3-4b6c-4b93-bc2e-5e7965a840cf"
+      },
+      {
+        "rank": 2,
+        "title": "A $200 ChatGPT subscription could cost OpenAI $14,000 if you actually used it to its full potential",
+        "subreddit": "r/technology",
+        "score": 18637,
+        "num_comments": 1315,
+        "author": "rkhunter_",
+        "permalink": "https://www.reddit.com/r/technology/comments/1u5ufgs/a_200_chatgpt_subscription_could_cost_openai/",
+        "url": "https://www.techspot.com/news/112759-openai-anthropic-cant-afford-have-everyone-use-ai.html"
+      }
+    ]
+  }
+}

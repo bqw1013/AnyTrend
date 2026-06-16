@@ -1,0 +1,30 @@
+{
+  "command": "producthunt/get-trending",
+  "success": true,
+  "meta": { "duration": 4196 },
+  "data": {
+    "date": "2026-06-14",
+    "url": "https://www.producthunt.com/leaderboard/daily/2026/6/14",
+    "count": 3,
+    "items": [
+      {
+        "rank": 1,
+        "title": "Slashy",
+        "tagline": "The AI assistant that does email for you",
+        "votes": 112,
+        "topics": ["Email", "Artificial Intelligence", "Virtual Assistants"],
+        "slug": "slashy-3",
+        "url": "https://www.producthunt.com/products/slashy-3"
+      },
+      {
+        "rank": 2,
+        "title": "Wobo 2.0",
+        "tagline": "Tinder for jobs: swipe right and AI applies for you",
+        "votes": 1,
+        "topics": ["Productivity", "Artificial Intelligence", "Career"],
+        "slug": "wobo-ai",
+        "url": "https://www.producthunt.com/products/wobo-ai"
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "command": "google/get-trending",
+  "success": true,
+  "meta": { "duration": 8288 },
+  "data": {
+    "count": 3,
+    "items": [
+      {
+        "title": "oliver tree death",
+        "searchVolume": "100万",
+        "changePct": "1,000%",
+        "timeAgo": "16小时前",
+        "isActive": true,
+        "relatedTopics": ["did oliver tree die", "gaspi", "is oliver tree dead"]
+      },
+      {
+        "title": "ufc",
+        "searchVolume": "200万",
+        "changePct": "600%",
+        "timeAgo": "20小时前",
+        "isActive": true,
+        "relatedTopics": ["ufc fights", "dana white", "ufc tonight"]
+      }
+    ]
+  }
+}

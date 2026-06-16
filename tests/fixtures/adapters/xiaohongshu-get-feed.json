@@ -1,0 +1,45 @@
+{
+  "command": "xiaohongshu/get-feed",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "channel": "推荐",
+    "channel_id": "homefeed_recommend",
+    "count": 20,
+    "total_available": 35,
+    "notes": [
+      {
+        "note_id": "6a2ab49800000000070292f3",
+        "xsec_token": "ABGvBpDDiFZMqMmoMxRF1xJLf988DR5GG0NBOz238gD_c=",
+        "title": "大家都在让 Agent 自进化，但都改错了层",
+        "type": "normal",
+        "author": {
+          "nickname": "dav",
+          "user_id": "6273e0bb0000000021020830",
+          "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31na0bb2r586g5ojjs2toc21gfvef5p8"
+        },
+        "likes": "289",
+        "cover": { "url": "http://sns-webpic-qc.xhscdn.com/...", "width": 1200, "height": 1600 },
+        "duration": 0,
+        "note_url": "https://www.xiaohongshu.com/explore/6a2ab49800000000070292f3",
+        "rank": 1
+      },
+      {
+        "note_id": "6a2d7f8c0000000008026859",
+        "xsec_token": "AB2JeXkSWGPUMOjkRovRsduVQZ9pzvrEpG1oejXbgYNXw=",
+        "title": "sm的吃不起...原产地的总行了吧！",
+        "type": "video",
+        "author": {
+          "nickname": "甜桃小屋",
+          "user_id": "69ea12dd0000000002001400",
+          "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/..."
+        },
+        "likes": "1.4万",
+        "cover": { "url": "http://sns-webpic-qc.xhscdn.com/...", "width": 1263, "height": 1685 },
+        "duration": 14,
+        "note_url": "https://www.xiaohongshu.com/explore/6a2d7f8c0000000008026859",
+        "rank": 2
+      }
+    ]
+  }
+}

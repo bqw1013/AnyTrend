@@ -1,0 +1,34 @@
+{
+  "command": "juejin/get-hot",
+  "success": true,
+  "meta": { "duration": 320 },
+  "params": { "sort_type": 3 },
+  "data": {
+    "items": [
+      {
+        "rank": 1,
+        "title": "Fable 5 的系统提示词被人扒出来了，精彩，太精彩了。",
+        "url": "https://juejin.cn/post/7650052991786401832",
+        "author": "cxuanAI",
+        "author_title": "架构师",
+        "brief": "Anthropic 6 月 9 号发了 Claude Fable 5。",
+        "tags": ["后端", "程序员", "人工智能"],
+        "view_count": 4436,
+        "digg_count": 41,
+        "collect_count": 48,
+        "comment_count": 8,
+        "hot_index": 270,
+        "read_time": "17分钟",
+        "cover_image": ""
+      },
+      {
+        "rank": 2,
+        "title": "",
+        "url": "https://juejin.cn/post/7651338917442945033",
+        "brief": "这是一条没有标题的脏数据",
+        "tags": [],
+        "hot_index": 13
+      }
+    ]
+  }
+}

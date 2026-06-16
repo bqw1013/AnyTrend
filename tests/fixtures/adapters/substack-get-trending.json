@@ -1,0 +1,21 @@
+{
+  "command": "substack/get-trending",
+  "success": true,
+  "meta": { "duration": 2345 },
+  "data": {
+    "trendingTopics": [
+      {
+        "query": "Knicks win NBA title",
+        "title": "Knicks win NBA title ends drought",
+        "description": "Knicks win NBA title ends drought",
+        "category": "Sports",
+        "long_description": "The New York Knicks win their first NBA championship since 1973.",
+        "predictionMarket": {
+          "title": "NBA: 2027 Champion",
+          "confidence": 62
+        },
+        "is_currently_happening": false
+      }
+    ]
+  }
+}

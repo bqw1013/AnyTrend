@@ -1,0 +1,23 @@
+{
+  "command": "toutiao/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "params": { "channel": "推荐" },
+  "data": {
+    "channel": "推荐",
+    "items": [
+      {
+        "title": "AI Agent 自进化浪潮下的架构反思",
+        "abstract": "从工具链到智能体，行业正在重新思考 Agent 的分层与边界。",
+        "url": "https://www.toutiao.com/article/7651086991836628001/",
+        "clusterId": "7651086991836628001"
+      },
+      {
+        "title": "国产大模型长上下文能力再突破",
+        "abstract": "多家厂商发布百万 token 级别的上下文窗口方案，应用场景持续扩展。",
+        "url": "https://www.toutiao.com/article/7651086991836628002/",
+        "clusterId": "7651086991836628002"
+      }
+    ]
+  }
+}

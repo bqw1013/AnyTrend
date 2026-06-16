@@ -1,0 +1,33 @@
+{
+  "command": "medium/get-tag-trending",
+  "success": true,
+  "meta": { "duration": 3210 },
+  "data": {
+    "tag": {
+      "slug": "artificial-intelligence",
+      "displayTitle": "Artificial Intelligence",
+      "postCount": 123456
+    },
+    "count": 15,
+    "items": [
+      {
+        "rank": 1,
+        "title": "Sizing Up New Technology, and Pivoting Yourself",
+        "subtitle": "Every time a new technology arrives, we engineers are faced with two questions.",
+        "url": "https://shibuiyusuke.medium.com/sizing-up-new-technology-and-pivoting-yourself-3b0ccface136",
+        "author": {
+          "name": "Shibui Yusuke",
+          "username": "shibuiyusuke",
+          "url": "https://medium.com/@shibuiyusuke"
+        },
+        "clapCount": 8,
+        "responseCount": 0,
+        "readingTime": 13,
+        "publishedAt": "2026-06-09T09:16:46.131Z",
+        "tags": ["Paradigm", "New Technology Updates", "Pivoting"],
+        "previewImage": "https://miro.medium.com/v2/1*2N3AnkxykwYXy0Il1rR01A.png",
+        "isLocked": false
+      }
+    ]
+  }
+}

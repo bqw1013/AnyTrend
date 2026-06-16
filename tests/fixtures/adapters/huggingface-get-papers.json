@@ -1,0 +1,34 @@
+{
+  "command": "huggingface/get-papers",
+  "success": true,
+  "meta": { "duration": 2345 },
+  "data": {
+    "period": "daily",
+    "limit": 5,
+    "count": 5,
+    "papers": [
+      {
+        "rank": 1,
+        "title": "APPO: Agentic Procedural Policy Optimization",
+        "url": "https://huggingface.co/papers/2606.12384",
+        "abstract": "",
+        "authors": ["Shidong Yang", "Yuxiang Ji", "Yong Wang", "Ziyu Ma", "xuc865"],
+        "published": "",
+        "upvotes": 51,
+        "github": null,
+        "arxiv": null
+      },
+      {
+        "rank": 2,
+        "title": "Sample Paper Two",
+        "url": "https://huggingface.co/papers/2606.12385",
+        "abstract": "This is a sample abstract.",
+        "authors": ["Alice Author"],
+        "published": "",
+        "upvotes": 1,
+        "github": null,
+        "arxiv": null
+      }
+    ]
+  }
+}

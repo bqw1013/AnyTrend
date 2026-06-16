@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Project directories (temporary)
+openspec/
+docs/
+
+# Temporary directories
+tmp/
+tmp_py/
+tmp_ts/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Agent / tool runtime directories
+.agents/
+.claude/
+.playwright-cli/
+.websculpt/
+
+# Data directories (keep structure, ignore contents if needed)
+# data/raw/*/
+# data/normalized/*/
+data/

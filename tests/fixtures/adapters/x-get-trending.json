@@ -1,0 +1,25 @@
+{
+  "command": "x/get-trending",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "tab": "news",
+    "region": "all",
+    "total_available": 5,
+    "items": [
+      {
+        "rank": 2,
+        "name": "U.S. Forces Anthropic to Shut Down Advanced AI Models Worldwide",
+        "domain_context": "days ago · News · 507K posts",
+        "search_url": "https://x.com/search?q=U.S.%20Forces%20Anthropic%20to%20Shut%20Down%20Advanced%20AI%20Models%20Worldwide&src=trend_click&vertical=trends"
+      },
+      {
+        "rank": 1,
+        "name": "On Every Corner",
+        "domain_context": "Promoted",
+        "search_url": "https://x.com/search?q=On%20Every%20Corner&src=trend_click&vertical=trends",
+        "is_promoted": true
+      }
+    ]
+  }
+}

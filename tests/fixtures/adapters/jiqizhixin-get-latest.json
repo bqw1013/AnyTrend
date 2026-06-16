@@ -1,0 +1,31 @@
+{
+  "command": "jiqizhixin/get-latest",
+  "success": true,
+  "meta": { "duration": 3500 },
+  "data": {
+    "totalCount": 15234,
+    "publishedArticlesCount": 15234,
+    "limit": 20,
+    "articles": [
+      {
+        "id": "c447cb4a-accb-45a6-86d8-f257074374e6",
+        "title": "「物理世界的OpenAI」——极佳视界再获10亿元B2轮融资",
+        "coverImageUrl": "https://image.jiqizhixin.com/uploads/...",
+        "category": "industry",
+        "slug": "2026-06-15-7",
+        "tagList": ["极佳视界（GigaAI）"],
+        "author": "新闻资讯",
+        "publishedAt": "2026/06/15 15:15",
+        "content": "近日，物理AGI全球领军企业「极佳视界」再获10亿元B2轮融资...",
+        "source": "机器之心"
+      },
+      {
+        "id": "dummy-id",
+        "title": "",
+        "slug": "2026-06-15-6",
+        "tagList": [],
+        "content": ""
+      }
+    ]
+  }
+}

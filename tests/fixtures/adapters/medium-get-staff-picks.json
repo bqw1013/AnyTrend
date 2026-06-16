@@ -1,0 +1,48 @@
+{
+  "command": "medium/get-staff-picks",
+  "success": true,
+  "meta": { "duration": 3210 },
+  "data": {
+    "limit": 20,
+    "items": [
+      {
+        "rank": 1,
+        "title": "Our LGBT Literary Heroes Had a Pride That Took Boldness and Guts",
+        "subtitle": "Molly Bolt of 'Rubyfruit Jungle' and Billy Sive of 'The Front Runner' remind me I've had it easy",
+        "url": "https://medium.com/prismnpen/our-lgbt-literary-heroes-had-a-pride-that-took-boldness-and-guts-4a70b93823f1",
+        "author": {
+          "name": "Joe Guay - Dispatches From the Guay Life!",
+          "username": "joeguayvo",
+          "url": "https://medium.com/@joeguayvo"
+        },
+        "clapCount": 2263,
+        "responseCount": 35,
+        "readingTime": 7,
+        "publishedAt": "2026-05-31T08:11:00.511Z",
+        "tags": ["Lesbian", "Books", "Personal Growth", "Pride Month", "LGBTQ"],
+        "previewImage": "https://miro.medium.com/v2/resize:fit:400/1*10zUUjbiV5LVIMov3jaAow.jpeg",
+        "curatorNote": "I really enjoyed this reflection on Pride!",
+        "isLocked": true
+      },
+      {
+        "rank": 2,
+        "title": "My Ted Turner escapades",
+        "subtitle": "",
+        "url": "https://medium.com/@someauthor/my-ted-turner-escapades",
+        "author": {
+          "name": "Some Author",
+          "username": "someauthor",
+          "url": "https://medium.com/@someauthor"
+        },
+        "clapCount": 790,
+        "responseCount": 0,
+        "readingTime": 4,
+        "publishedAt": "2026-06-01T10:00:00.000Z",
+        "tags": [],
+        "previewImage": null,
+        "curatorNote": null,
+        "isLocked": false
+      }
+    ]
+  }
+}

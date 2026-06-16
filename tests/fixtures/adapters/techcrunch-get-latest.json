@@ -1,0 +1,29 @@
+{
+  "command": "techcrunch/get-latest",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "category": "artificial-intelligence",
+    "count": 3,
+    "page": 1,
+    "perPage": 3,
+    "articles": [
+      {
+        "id": 3132765,
+        "title": "The AI layoff wave is becoming a powder keg",
+        "url": "https://techcrunch.com/2026/06/15/the-ai-layoff-wave-is-becoming-a-powder-keg/",
+        "date": "2026-06-15T00:25:41",
+        "excerpt": "What makes this combustible: at the very moment that tens of thousands of workers are being shown the door, a small cohort of AI insiders is becoming wealthy on a scale that's hard to comprehend.",
+        "image": "https://techcrunch.com/wp-content/uploads/2026/06/Powder-Keg.png"
+      },
+      {
+        "id": 3132750,
+        "title": "Another tech story with quotes and more",
+        "url": "https://techcrunch.com/2026/06/14/another-tech-story/",
+        "date": "2026-06-14T22:10:00",
+        "excerpt": "This excerpt contains HTML entities like smart quotes and ends with more",
+        "image": ""
+      }
+    ]
+  }
+}

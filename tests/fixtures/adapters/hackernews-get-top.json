@@ -1,0 +1,29 @@
+{
+  "command": "hackernews/get-top",
+  "success": true,
+  "meta": { "duration": 420 },
+  "data": [
+    {
+      "rank": 1,
+      "title": "Firewood Splitting Simulator",
+      "url": "https://screen.toys/firewood/",
+      "hnUrl": "https://news.ycombinator.com/item?id=48471638",
+      "points": 762,
+      "numComments": 235,
+      "author": "memalign",
+      "createdAt": "2026-06-10T05:01:31Z",
+      "storyId": "48471638"
+    },
+    {
+      "rank": 2,
+      "title": "Ask HN: What are you working on?",
+      "url": null,
+      "hnUrl": "https://news.ycombinator.com/item?id=48526360",
+      "points": 590,
+      "numComments": 1594,
+      "author": "kingstoned",
+      "createdAt": "2026-06-14T11:50:48Z",
+      "storyId": "48526360"
+    }
+  ]
+}

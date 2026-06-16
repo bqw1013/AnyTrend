@@ -1,0 +1,44 @@
+{
+  "command": "jike/get-hot",
+  "success": true,
+  "meta": { "duration": 2345 },
+  "data": {
+    "count": 20,
+    "topic": {
+      "id": "63579abb6724cc583b9bba9a",
+      "name": "AI探索站",
+      "subscribers_count": 113946,
+      "pic_url": ""
+    },
+    "items": [
+      {
+        "rank": 1,
+        "id": "6a2a34358694679c3675e03e",
+        "content": "评价一款ai应用是否成立，真正的top3 指标其实是付费用户毛利率、续费率和cac\n想实现前两者的健康，要么将卖token的商业模式变成其他商业模式，要么将token卖给对token单价不敏感的用户\n所有建立在token敏感用户上卖token的产品，都只能是模型供应商的生意",
+        "like_count": 44,
+        "comment_count": 8,
+        "repost_count": 5,
+        "share_count": 10,
+        "created_at": "2026-06-11T04:06:13.541Z",
+        "user": { "screen_name": "月光", "username": "42D6F869-16B3-43A1-BD07-C069921F0F79" },
+        "topic": { "id": "63579abb6724cc583b9bba9a", "name": "AI探索站", "subscribers_count": 113946 },
+        "pictures": [],
+        "url": "https://web.okjike.com/original-post/6a2a34358694679c3675e03e"
+      },
+      {
+        "rank": 2,
+        "id": "6a2eb6ac5ecae578f9f68405",
+        "content": "大补的一天！！",
+        "like_count": 44,
+        "comment_count": 0,
+        "repost_count": 0,
+        "share_count": 0,
+        "created_at": "2026-06-11T04:06:13.541Z",
+        "user": { "screen_name": "创业者" },
+        "topic": { "name": "创业者的日常" },
+        "pictures": ["https://example.com/pic.jpg"],
+        "url": "https://web.okjike.com/original-post/6a2eb6ac5ecae578f9f68405"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "command": "douyin/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "params": { "type": "video" },
+  "data": {
+    "items": [
+      {
+        "rank": 1,
+        "title": "妈妈：嘻嘻 你最好期末也这么考～",
+        "author_name": "繁了个星",
+        "author_link": "https://www.iesdouyin.com/share/user/3676383442375687",
+        "play_count": 57127674,
+        "like_count": 2028318,
+        "comment_count": 91560,
+        "share_count": 1458036,
+        "hot_score": 1493505,
+        "duration": 29400,
+        "key_words": ["最好", "嘻嘻", "期末", "妈妈", "这么"],
+        "cover_url": "https://p26-sign.douyinpic.com/cover.jpg",
+        "item_id": "7650851590979464633"
+      },
+      {
+        "rank": 2,
+        "title": "瑞典5:1突尼斯",
+        "author_name": "",
+        "author_link": "",
+        "play_count": 0,
+        "like_count": 0,
+        "comment_count": 0,
+        "share_count": 0,
+        "hot_score": 11851623,
+        "duration": 0,
+        "key_words": [],
+        "cover_url": "https://p5-ex-gddgtc-sign.douyinpic.com/cover.jpg",
+        "item_id": ""
+      }
+    ]
+  }
+}

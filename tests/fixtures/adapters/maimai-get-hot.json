@@ -1,0 +1,22 @@
+{
+  "command": "maimai/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "mode": "hot-rank",
+    "items": [
+      {
+        "rank": 1,
+        "title": "蚂蚁集团正秘密测试AI版支付宝",
+        "tag": "新",
+        "url": "https://maimai.cn/community/hot-rank"
+      },
+      {
+        "rank": 2,
+        "title": "某大厂开启新一轮组织调整",
+        "tag": "",
+        "url": "https://maimai.cn/community/hot-rank"
+      }
+    ]
+  }
+}

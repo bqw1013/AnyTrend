@@ -1,0 +1,35 @@
+{
+  "command": "lobsters/get-hot",
+  "success": true,
+  "meta": { "duration": 1234 },
+  "data": {
+    "sort": "hot",
+    "page": 1,
+    "count": 3,
+    "items": [
+      {
+        "id": "1xyby4",
+        "title": "write for one person",
+        "url": "https://wizardzines.com/comics/write-for-one-person/",
+        "votes": 35,
+        "domain": "wizardzines.com",
+        "tags": ["practices"],
+        "author": "",
+        "commentCount": 1,
+        "time": "2026-06-14 22:29:47",
+        "timeAgo": "3 hours ago"
+      },
+      {
+        "id": "internal01",
+        "title": "A discussion about Lobsters",
+        "url": "",
+        "votes": 12,
+        "domain": "",
+        "tags": ["meta"],
+        "commentCount": 8,
+        "time": "2026-06-14 20:00:00",
+        "timeAgo": "5 hours ago"
+      }
+    ]
+  }
+}

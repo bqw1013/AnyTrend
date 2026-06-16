@@ -1,0 +1,21 @@
+{
+  "command": "zhihu/get-hot",
+  "success": true,
+  "meta": { "duration": 5123 },
+  "data": {
+    "items": [
+      {
+        "rank": 1,
+        "title": "市场监管总局约谈山姆总部，要求其严防全链条食品安全风险，山姆的品控出了什么问题？此次约谈有何警示意义？",
+        "url": "https://www.zhihu.com/question/2049810638076130456",
+        "hot": "1073 万热度"
+      },
+      {
+        "rank": 2,
+        "title": "为什么现在很多年轻人不愿意听父母的话？",
+        "url": "https://www.zhihu.com/question/1234567890123456789",
+        "hot": "528 万热度"
+      }
+    ]
+  }
+}

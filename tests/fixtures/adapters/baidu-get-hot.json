@@ -1,0 +1,29 @@
+{
+  "command": "baidu/get-hot",
+  "success": true,
+  "meta": { "duration": 177 },
+  "data": {
+    "tab": "realtime",
+    "total": 50,
+    "items": [
+      {
+        "rank": 1,
+        "title": "3亿北斗工程现「脆皮底座」",
+        "heatIndex": "7808179",
+        "description": "山东济潍高速沿线，有人用手掰开了一个国家重点工程的底座。",
+        "tag": "热",
+        "url": "https://www.baidu.com/s?wd=...",
+        "trend": "same"
+      },
+      {
+        "rank": 2,
+        "title": "寒战1994",
+        "heatIndex": "96438",
+        "description": "",
+        "tag": "",
+        "url": "https://www.baidu.com/s?wd=...",
+        "trend": ""
+      }
+    ]
+  }
+}

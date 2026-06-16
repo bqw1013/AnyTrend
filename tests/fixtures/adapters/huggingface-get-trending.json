@@ -1,0 +1,44 @@
+{
+  "command": "huggingface/get-trending",
+  "success": true,
+  "meta": { "duration": 2345 },
+  "data": {
+    "type": "models",
+    "sort": "trending",
+    "items": [
+      {
+        "rank": 1,
+        "name": "google/diffusiongemma-26B-A4B-it",
+        "url": "https://huggingface.co/google/diffusiongemma-26B-A4B-it",
+        "type": "Image-Text-to-Text",
+        "params": "26B",
+        "downloads": 199000,
+        "likes": 811
+      },
+      {
+        "rank": 2,
+        "name": "t5-base",
+        "url": "https://huggingface.co/t5-base",
+        "type": "Text-to-Text Transfer Transformer",
+        "downloads": 0,
+        "likes": 42
+      },
+      {
+        "rank": 1,
+        "name": "Glint-Research/Fable-5-traces",
+        "url": "https://huggingface.co/datasets/Glint-Research/Fable-5-traces",
+        "type": "Viewer",
+        "downloads": 4670,
+        "likes": 41
+      },
+      {
+        "rank": 1,
+        "name": "Dsrw",
+        "url": "https://huggingface.co/spaces/Caritas111/dsrw",
+        "updated": "1 minute ago",
+        "downloads": 0,
+        "likes": 7
+      }
+    ]
+  }
+}
