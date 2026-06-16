@@ -13,6 +13,8 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { getAdapter } from "../adapters/index.js";
 import { nowIso } from "../adapters/utils.js";
+import type { Logger } from "../lib/logger.js";
+import { defaultLogger } from "../lib/logger.js";
 import type { NormalizedOutput } from "../types/index.js";
 import { adapterOutputSchema } from "../types/schema.js";
 
@@ -39,7 +41,9 @@ function parseArgs(): { rawDir: string; outDir: string } {
 	return { rawDir, outDir };
 }
 
-export async function normalizeBatch(rawDir: string, outDir: string): Promise<void> {
+export async function runNormalizeBatch(rawDir: string, outDir: string, logger?: Logger): Promise<void> {
+	const log = logger ?? defaultLogger;
+
 	mkdirSync(outDir, { recursive: true });
 
 	const files = readdirSync(rawDir)
@@ -47,7 +51,7 @@ export async function normalizeBatch(rawDir: string, outDir: string): Promise<vo
 		.sort();
 
 	if (files.length === 0) {
-		console.log(`No JSON files found in ${rawDir}`);
+		log.log(`No JSON files found in ${rawDir}`);
 		return;
 	}
 
@@ -65,7 +69,7 @@ export async function normalizeBatch(rawDir: string, outDir: string): Promise<vo
 
 			const command = raw.command;
 			if (!command) {
-				console.log(`SKIP: ${file} (no command field)`);
+				log.log(`SKIP: ${file} (no command field)`);
 				failCount++;
 				continue;
 			}
@@ -85,23 +89,23 @@ export async function normalizeBatch(rawDir: string, outDir: string): Promise<vo
 			};
 
 			writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, "utf-8");
-			console.log(`OK:   ${file}`);
+			log.log(`OK:   ${file}`);
 			successCount++;
 		} catch (err) {
-			console.error(`FAIL: ${file} - ${err instanceof Error ? err.message : String(err)}`);
+			log.error(`FAIL: ${file} - ${err instanceof Error ? err.message : String(err)}`);
 			if (err instanceof Error && err.stack) {
-				console.error(err.stack);
+				log.error(err.stack);
 			}
 			failCount++;
 		}
 	}
 
-	console.log(`\nDone. Success: ${successCount}, Failed: ${failCount}`);
+	log.log(`\nDone. Success: ${successCount}, Failed: ${failCount}`);
 }
 
 async function main(): Promise<void> {
 	const { rawDir, outDir } = parseArgs();
-	await normalizeBatch(rawDir, outDir);
+	await runNormalizeBatch(rawDir, outDir);
 }
 
 function isMainModule(): boolean {

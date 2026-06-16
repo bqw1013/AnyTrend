@@ -17,9 +17,20 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COLLECT_PLAN, interleaveCalls } from "../config/collect-plan.js";
+import type { Logger } from "../lib/logger.js";
+import { defaultLogger } from "../lib/logger.js";
 import { runAllCalls } from "../lib/runner.js";
-import { mergeNormalized } from "./merge-normalized.js";
-import { normalizeBatch } from "./normalize-batch.js";
+import { runMerge } from "./merge-normalized.js";
+import { runNormalizeBatch } from "./normalize-batch.js";
+
+export interface RunCollectDailyOptions {
+	date: string;
+	concurrency: number;
+	interCallDelayMs: number;
+	skipCollect: boolean;
+	skipNormalize: boolean;
+	logger?: Logger;
+}
 
 interface CliOptions {
 	date: string;
@@ -69,8 +80,8 @@ function parseArgs(): CliOptions {
 	};
 }
 
-async function main(): Promise<void> {
-	const options = parseArgs();
+export async function runCollectDaily(options: RunCollectDailyOptions): Promise<void> {
+	const logger = options.logger ?? defaultLogger;
 	const { date, concurrency, interCallDelayMs, skipCollect, skipNormalize } = options;
 
 	const rawDir = path.join("data", "raw", date);
@@ -86,36 +97,41 @@ async function main(): Promise<void> {
 
 	if (!skipCollect) {
 		const calls = interleaveCalls(COLLECT_PLAN);
-		console.log(`\nStarting daily collection for ${date}`);
-		console.log(
+		logger.log(`\nStarting daily collection for ${date}`);
+		logger.log(
 			`Total calls: ${calls.length}, concurrency: ${concurrency}, inter-call delay: ${interCallDelayMs}ms\n`,
 		);
-		callResults = await runAllCalls(calls, rawDir, concurrency, interCallDelayMs);
+		callResults = await runAllCalls(calls, rawDir, concurrency, interCallDelayMs, logger);
 
 		const successCount = callResults.filter((r) => r.status === "success").length;
 		const failCount = callResults.length - successCount;
-		console.log(`\nCollection done. Success: ${successCount}, Failed: ${failCount}\n`);
+		logger.log(`\nCollection done. Success: ${successCount}, Failed: ${failCount}\n`);
 	} else {
-		console.log("Skipping collection (--skip-collect).\n");
+		logger.log("Skipping collection (--skip-collect).\n");
 	}
 
 	if (!skipNormalize) {
-		console.log("Running normalize batch...\n");
-		await normalizeBatch(rawDir, normalizedDir);
+		logger.log("Running normalize batch...\n");
+		await runNormalizeBatch(rawDir, normalizedDir, logger);
 
-		console.log("\nMerging normalized outputs...\n");
-		const { report } = await mergeNormalized(normalizedDir, dailyDir, date, callResults, startedAt);
+		logger.log("\nMerging normalized outputs...\n");
+		const { report } = await runMerge(normalizedDir, dailyDir, date, callResults, startedAt, logger);
 
-		console.log("\n--- Daily Report ---");
-		console.log(`Date: ${report.date}`);
-		console.log(`Total calls: ${report.total_calls}`);
-		console.log(`Successful: ${report.successful_calls}`);
-		console.log(`Failed: ${report.failed_calls}`);
-		console.log(`Total items: ${report.total_items}`);
-		console.log(`Duration: ${new Date(report.finished_at).getTime() - new Date(report.started_at).getTime()}ms`);
+		logger.log("\n--- Daily Report ---");
+		logger.log(`Date: ${report.date}`);
+		logger.log(`Total calls: ${report.total_calls}`);
+		logger.log(`Successful: ${report.successful_calls}`);
+		logger.log(`Failed: ${report.failed_calls}`);
+		logger.log(`Total items: ${report.total_items}`);
+		logger.log(`Duration: ${new Date(report.finished_at).getTime() - new Date(report.started_at).getTime()}ms`);
 	} else {
-		console.log("Skipping normalize and merge (--skip-normalize).");
+		logger.log("Skipping normalize and merge (--skip-normalize).");
 	}
+}
+
+async function main(): Promise<void> {
+	const options = parseArgs();
+	await runCollectDaily(options);
 }
 
 function isMainModule(): boolean {

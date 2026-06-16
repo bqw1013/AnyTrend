@@ -10,7 +10,9 @@
 import { spawn } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import pc from "picocolors";
 import type { CollectCall } from "../config/collect-plan.js";
+import { defaultLogger, type Logger } from "./logger.js";
 
 export interface CallResult {
 	call: CollectCall;
@@ -67,7 +69,9 @@ export async function runWebsculptCall(
 	rawDir: string,
 	index: number,
 	total: number,
+	logger?: Logger,
 ): Promise<CallResult> {
+	const log = logger ?? defaultLogger;
 	mkdirSync(rawDir, { recursive: true });
 	const outputPath = path.join(rawDir, `${call.outputName}.json`);
 	const args = resolveArgs(call.args);
@@ -79,11 +83,15 @@ export async function runWebsculptCall(
 
 	const start = Date.now();
 	const timeoutMs = 120_000;
-	console.log(`[${index + 1}/${total}] ${call.command} ${args.join(" ")}`);
+	log.log(`${pc.dim(`[${index + 1}/${total}]`)} ${call.command} ${args.join(" ")}`);
 
 	return new Promise((resolve) => {
 		const proc = spawn("websculpt", [platform, action, ...args], {
 			stdio: ["ignore", "pipe", "pipe"],
+			// On Windows, websculpt may be installed as a POSIX shell script
+			// (e.g. via nvm4w/Git Bash) that CreateProcess cannot execute directly.
+			// Using the system shell makes PATH resolution work across platforms.
+			shell: process.platform === "win32",
 		});
 
 		let stdout = "";
@@ -135,6 +143,14 @@ export async function runWebsculptCall(
 					// stdout may contain non-JSON trailing lines; treat as unknown count.
 					itemCount = null;
 				}
+			}
+
+			if (error) {
+				log.log(`  ${pc.red("✗")} ${error}`);
+			} else {
+				const elapsed = `${(durationMs / 1000).toFixed(1)}s`;
+				const count = itemCount !== null ? `${itemCount} items, ` : "";
+				log.log(`  ${pc.green("✓")} ${count}${elapsed}`);
 			}
 
 			resolve({
@@ -211,6 +227,7 @@ export async function runAllCalls(
 	rawDir: string,
 	maxConcurrency: number,
 	interCallDelayMs: number,
+	logger?: Logger,
 ): Promise<CallResult[]> {
 	const results: CallResult[] = [];
 	const pending = [...calls];
@@ -221,7 +238,7 @@ export async function runAllCalls(
 	async function runOne(call: CollectCall, index: number, total: number): Promise<void> {
 		const release = await semaphore.acquire();
 		try {
-			const result = await runWebsculptCall(call, rawDir, index, total);
+			const result = await runWebsculptCall(call, rawDir, index, total, logger);
 			results.push(result);
 			if (interCallDelayMs > 0) {
 				await new Promise((resolve) => setTimeout(resolve, interCallDelayMs));

@@ -10,9 +10,11 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { getAdapter } from "../adapters/index.js";
 import { nowIso } from "../adapters/utils.js";
+import type { Logger } from "../lib/logger.js";
+import { defaultLogger } from "../lib/logger.js";
 import type { NormalizedOutput } from "../types/index.js";
 import { adapterOutputSchema } from "../types/schema.js";
 
@@ -39,14 +41,16 @@ function parseArgs(): { input: string; output: string } {
 	return { input, output };
 }
 
-async function normalizeFile(inputPath: string, outputPath: string): Promise<void> {
-	const raw = JSON.parse(readFileSync(inputPath, "utf-8")) as {
+export async function runNormalize(rawPath: string, outPath: string, logger?: Logger): Promise<void> {
+	const log = logger ?? defaultLogger;
+
+	const raw = JSON.parse(readFileSync(rawPath, "utf-8")) as {
 		command?: string;
 	} & Record<string, unknown>;
 
 	const command = raw.command;
 	if (!command) {
-		throw new Error(`No 'command' field found in ${inputPath}`);
+		throw new Error(`No 'command' field found in ${rawPath}`);
 	}
 
 	const adapter = await getAdapter(command);
@@ -54,9 +58,7 @@ async function normalizeFile(inputPath: string, outputPath: string): Promise<voi
 
 	const parsed = adapterOutputSchema.safeParse(adapterOutput);
 	if (!parsed.success) {
-		throw new Error(
-			`Adapter output for ${command} from ${inputPath} does not match schema:\n${parsed.error.message}`,
-		);
+		throw new Error(`Adapter output for ${command} from ${rawPath} does not match schema:\n${parsed.error.message}`);
 	}
 
 	const result: NormalizedOutput = {
@@ -65,17 +67,33 @@ async function normalizeFile(inputPath: string, outputPath: string): Promise<voi
 		...adapterOutput,
 	};
 
-	mkdirSync(path.dirname(outputPath), { recursive: true });
-	writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, "utf-8");
-	console.log(`Normalized: ${inputPath} -> ${outputPath}`);
+	mkdirSync(path.dirname(outPath), { recursive: true });
+	writeFileSync(outPath, `${JSON.stringify(result, null, 2)}\n`, "utf-8");
+	log.log(`Normalized: ${rawPath} -> ${outPath}`);
 }
 
 async function main(): Promise<void> {
 	const { input, output } = parseArgs();
-	await normalizeFile(input, output);
+	await runNormalize(input, output, defaultLogger);
 }
 
-main().catch((err) => {
-	console.error(err);
-	process.exit(1);
-});
+function isMainModule(): boolean {
+	const scriptPath = fileURLToPath(import.meta.url);
+	for (const arg of process.argv.slice(1)) {
+		try {
+			if (fileURLToPath(pathToFileURL(arg).href) === scriptPath) {
+				return true;
+			}
+		} catch {
+			// Ignore invalid file URLs.
+		}
+	}
+	return false;
+}
+
+if (isMainModule()) {
+	main().catch((err) => {
+		console.error(err);
+		process.exit(1);
+	});
+}

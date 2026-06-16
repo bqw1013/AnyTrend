@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-// argsToRecord is not exported; test mergeNormalized behavior via a lightweight import.
-// We keep this file as a placeholder for future public helpers.
-
-describe("merge-normalized placeholder", () => {
-	it("loads the module", async () => {
+describe("merge-normalized", () => {
+	it("exports runMerge", async () => {
 		const mod = await import("../../src/scripts/merge-normalized.js");
-		expect(mod.mergeNormalized).toBeTypeOf("function");
+		expect(mod.runMerge).toBeTypeOf("function");
+	});
+
+	it("exports type interfaces", async () => {
+		const mod = await import("../../src/scripts/merge-normalized.js");
+		// Type exports exist (can't test at runtime, but module loads)
+		expect(mod).toBeDefined();
 	});
 });

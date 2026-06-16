@@ -11,6 +11,8 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import type { Logger } from "../lib/logger.js";
+import { defaultLogger } from "../lib/logger.js";
 import type { CallResult } from "../lib/runner.js";
 import type { NormalizedItem, NormalizedOutput } from "../types/index.js";
 
@@ -107,13 +109,16 @@ function argsToRecord(args: string[]): Record<string, string | number | boolean>
 	return record;
 }
 
-export async function mergeNormalized(
+export async function runMerge(
 	normalizedDir: string,
 	outDir: string,
 	date: string,
 	callResults?: CallResult[],
 	startedAt?: string,
+	logger?: Logger,
 ): Promise<{ merged: MergedDailyOutput; report: CollectionReport }> {
+	const log = logger ?? defaultLogger;
+
 	mkdirSync(outDir, { recursive: true });
 
 	const files = readdirSync(normalizedDir)
@@ -129,12 +134,12 @@ export async function mergeNormalized(
 		try {
 			output = JSON.parse(readFileSync(filePath, "utf-8")) as NormalizedOutput;
 		} catch {
-			console.error(`SKIP: ${file} is not valid JSON`);
+			log.error(`SKIP: ${file} is not valid JSON`);
 			continue;
 		}
 
 		if (!output.response_meta?.success) {
-			console.log(`SKIP: ${file} (normalize failed)`);
+			log.log(`SKIP: ${file} (normalize failed)`);
 			continue;
 		}
 
@@ -217,8 +222,8 @@ export async function mergeNormalized(
 	writeFileSync(mergedPath, `${JSON.stringify(merged, null, 2)}\n`, "utf-8");
 	writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf-8");
 
-	console.log(`Merged ${items.length} items into ${mergedPath}`);
-	console.log(`Report written to ${reportPath}`);
+	log.log(`Merged ${items.length} items into ${mergedPath}`);
+	log.log(`Report written to ${reportPath}`);
 
 	return { merged, report };
 }
@@ -226,7 +231,7 @@ export async function mergeNormalized(
 async function main(): Promise<void> {
 	const { normalizedDir, outDir } = parseArgs();
 	const date = path.basename(normalizedDir);
-	await mergeNormalized(normalizedDir, outDir, date);
+	await runMerge(normalizedDir, outDir, date);
 }
 
 function isMainModule(): boolean {
