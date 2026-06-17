@@ -78,7 +78,7 @@ program
 program
 	.command("collect")
 	.description("Run only the WebSculpt collection step")
-	.option("--date <date>", "Date folder (YYYY-MM-DD, default: today)", formatDate(new Date()))
+	.option("--archive-date <date>", "Archive folder date (YYYY-MM-DD, default: today)", formatDate(new Date()))
 	.option("--concurrency <n>", "Max concurrent calls", parsePositiveInt, 8)
 	.option("--delay <ms>", "Delay between same-platform calls (ms)", parseNonNegativeInt, 1500)
 	.action(async (options) => {
@@ -86,7 +86,7 @@ program
 		const logger = createCliLogger(globals);
 
 		const collectOpts: RunCollectDailyOptions = {
-			date: options.date,
+			date: options.archiveDate,
 			concurrency: options.concurrency,
 			interCallDelayMs: options.delay,
 			skipCollect: false,
@@ -102,7 +102,7 @@ program
 program
 	.command("build")
 	.description("Run the full daily pipeline: collect + normalize + merge")
-	.option("--date <date>", "Date folder (YYYY-MM-DD, default: today)", formatDate(new Date()))
+	.option("--archive-date <date>", "Archive folder date (YYYY-MM-DD, default: today)", formatDate(new Date()))
 	.option("--concurrency <n>", "Max concurrent calls", parsePositiveInt, 8)
 	.option("--delay <ms>", "Delay between same-platform calls (ms)", parseNonNegativeInt, 1500)
 	.option("--skip-collect", "Skip collection, only normalize and merge", false)
@@ -112,7 +112,7 @@ program
 		const logger = createCliLogger(globals);
 
 		const buildOpts: RunCollectDailyOptions = {
-			date: options.date,
+			date: options.archiveDate,
 			concurrency: options.concurrency,
 			interCallDelayMs: options.delay,
 			skipCollect: options.skipCollect,

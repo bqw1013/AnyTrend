@@ -37,7 +37,7 @@ describe("CLI argument parsing", () => {
 		const { stdout, status } = runCli(["collect", "--help"]);
 		expect(status).toBe(0);
 		expect(stdout).toContain("Usage:");
-		expect(stdout).toContain("--date");
+		expect(stdout).toContain("--archive-date");
 		expect(stdout).toContain("--concurrency");
 		expect(stdout).toContain("--delay");
 	});
@@ -45,7 +45,7 @@ describe("CLI argument parsing", () => {
 	it("shows command help for build", () => {
 		const { stdout, status } = runCli(["build", "--help"]);
 		expect(status).toBe(0);
-		expect(stdout).toContain("--date");
+		expect(stdout).toContain("--archive-date");
 		expect(stdout).toContain("--skip-collect");
 		expect(stdout).toContain("--skip-normalize");
 	});

@@ -126,7 +126,7 @@ Environment is ready.
 anytrend build
 
 # 指定日期与并发参数
-anytrend build --date 2026-06-16 --concurrency 4 --delay 2000
+anytrend build --archive-date 2026-06-16 --concurrency 4 --delay 2000
 
 # 静默模式（仅输出最终报告）
 anytrend build --quiet
@@ -150,7 +150,7 @@ anytrend sources list
 
 ```bash
 # 只采集，不 Normalize / 合并
-anytrend collect --date 2026-06-17
+anytrend collect --archive-date 2026-06-17
 
 # 只 Normalize 已有原始数据
 anytrend normalize-batch \
@@ -191,27 +191,32 @@ anytrend sources list
 anytrend build
 
 # 或者：指定日期 + 静默模式
-anytrend build --date 2026-06-16 --quiet
+anytrend build --archive-date 2026-06-16 --quiet
 ```
 
 ### `anytrend build` — 运行完整日报流水线
 
 采集 + Normalize + 合并，一步完成（等价于 `collect` + `normalize-batch` + `merge` 的顺序执行）。
 
-默认以**今天日期**作为目录名，输出到 `data/raw/YYYY-MM-DD/`、`data/normalized/YYYY-MM-DD/` 和 `data/daily/YYYY-MM-DD/`。
+默认以**今天日期**作为归档目录名，输出到 `data/raw/YYYY-MM-DD/`、`data/normalized/YYYY-MM-DD/` 和 `data/daily/YYYY-MM-DD/`。
 
 ```bash
-anytrend build [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
+anytrend build [--archive-date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
                [--skip-collect] [--skip-normalize] [--quiet] [--no-color]
 ```
 
 | 选项 | 默认值 | 说明 |
 |---|---|---|
-| `--date` | 今天 | 采集日期 |
+| `--archive-date` | 今天 | 输出目录和报告使用的归档日期 |
 | `--concurrency` | 8 | 最大并发调用数 |
 | `--delay` | 1500 | 同平台调用间隔（毫秒） |
 | `--skip-collect` | false | 跳过采集，仅执行 Normalize + Merge |
 | `--skip-normalize` | false | 跳过 Normalize + Merge，仅采集 |
+
+> **关于 `--archive-date` 的注意事项：**
+> `--archive-date` 只决定输出目录名（`data/raw/YYYY-MM-DD/` 等）和报告中的日期字段，**不会传给 WebSculpt 命令作为历史日期参数**。
+> 因此大多数平台采集的是你运行命令那一刻的实时数据（如当前热榜），而不是指定日期的历史数据。
+> 少数命令有独立日期逻辑（如 `producthunt/get-trending` 使用太平洋时间昨日），与 `--archive-date` 无关。
 
 **示例：**
 
@@ -220,7 +225,7 @@ anytrend build [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
 anytrend build
 
 # 指定日期，降低并发和延迟以适配弱网环境
-anytrend build --date 2026-06-16 --concurrency 4 --delay 2000
+anytrend build --archive-date 2026-06-16 --concurrency 4 --delay 2000
 
 # 只采集原始数据，不 Normalize / 合并
 anytrend build --skip-normalize
@@ -250,14 +255,16 @@ data/
 只运行 WebSculpt 采集步骤，不执行 Normalize 和 Merge。适用于只需要原始数据、后续手动 Normalize 的场景。
 
 ```bash
-anytrend collect [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--quiet] [--no-color]
+anytrend collect [--archive-date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--quiet] [--no-color]
 ```
 
 | 选项 | 默认值 | 说明 |
 |---|---|---|
-| `--date` | 今天 | 采集日期 |
+| `--archive-date` | 今天 | 输出目录和报告使用的归档日期 |
 | `--concurrency` | 8 | 最大并发调用数 |
 | `--delay` | 1500 | 同平台调用间隔（毫秒） |
+
+> **关于 `--archive-date` 的注意事项：** 同 `anytrend build`，`--archive-date` 只决定文件归档目录，不控制 WebSculpt 命令返回哪一天的实时数据。
 
 **示例：**
 
@@ -265,8 +272,8 @@ anytrend collect [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--qui
 # 采集今天的原始数据
 anytrend collect
 
-# 指定日期和更低的并发数
-anytrend collect --date 2026-06-17 --concurrency 4
+# 指定归档日期和更低的并发数
+anytrend collect --archive-date 2026-06-17 --concurrency 4
 ```
 
 **预期输出：**
@@ -676,7 +683,7 @@ npm install
 
 ```bash
 # 使用 tsx 直接运行 TypeScript
-npx tsx src/cli.ts build --date 2026-06-16
+npx tsx src/cli.ts build --archive-date 2026-06-16
 npx tsx src/cli.ts doctor
 npx tsx src/cli.ts sources list
 ```
