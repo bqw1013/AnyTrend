@@ -30,7 +30,6 @@
 	"scripts": {
 		"clean": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', {recursive:true, force:true})\"",
 		"build": "npm run clean && tsc",
-		"dev": "tsx src/scripts/normalize.ts",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check --error-on-warnings .",
 		"check:fix": "biome check --write --error-on-warnings .",
@@ -41,10 +40,10 @@
 		"test:integration": "vitest run --project integration",
 		"test:e2e": "vitest run --project e2e",
 		"test:e2e:live": "node --input-type=module -e \"process.env.RUN_E2E_LIVE='1'; import { spawn } from 'node:child_process'; spawn('npx', ['vitest','run','--project','e2e'], {stdio:'inherit', env:process.env, shell:true})\"",
-		"normalize": "tsx src/scripts/normalize.ts",
-		"normalize:batch": "tsx src/scripts/normalize-batch.ts",
-		"collect:daily": "tsx src/scripts/collect-daily.ts",
-		"merge:daily": "tsx src/scripts/merge-normalized.ts",
+		"normalize": "tsx src/cli.ts normalize",
+		"normalize:batch": "tsx src/cli.ts normalize-batch",
+		"collect:daily": "tsx src/cli.ts build",
+		"merge:daily": "tsx src/cli.ts merge",
 		"prepublishOnly": "npm run build && npm run check && npm run typecheck && npm run test"
 	},
 	"keywords": [

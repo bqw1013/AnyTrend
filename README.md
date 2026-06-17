@@ -154,13 +154,13 @@ anytrend collect --date 2026-06-17
 
 # 只 Normalize 已有原始数据
 anytrend normalize-batch \
-  --input-dir data/raw/2026-06-17 \
-  --output-dir data/normalized/2026-06-17
+  --input data/raw/2026-06-17 \
+  --output data/normalized/2026-06-17
 
 # 只合并已 Normalize 的数据
 anytrend merge \
-  --input-dir data/normalized/2026-06-17 \
-  --output-dir data/daily/2026-06-17
+  --input data/normalized/2026-06-17 \
+  --output data/daily/2026-06-17
 ```
 
 ---
@@ -230,23 +230,23 @@ anytrend collect [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--qui
 将单个 raw JSON 文件转换为统一格式的 normalized 输出。
 
 ```bash
-anytrend normalize --raw <file> --out <file> [--quiet] [--no-color]
+anytrend normalize --input <file> --output <file> [--quiet] [--no-color]
 ```
 
 ### `anytrend normalize-batch` — 批量 Normalize
 
-将目录中的所有 raw JSON 文件批量 Normalize。
+将目录中的所有 raw JSON 文件批量 Normalize。`--input` 和 `--output` 均为目录路径。
 
 ```bash
-anytrend normalize-batch --input-dir <dir> --output-dir <dir> [--quiet] [--no-color]
+anytrend normalize-batch --input <dir> --output <dir> [--quiet] [--no-color]
 ```
 
 ### `anytrend merge` — 合并 Normalized 输出
 
-将 normalized 目录下的所有文件合并为 `daily-merged.json` 和 `collection-report.json`。
+将 normalized 目录下的所有文件合并为 `daily-merged.json` 和 `collection-report.json`。`--input` 和 `--output` 均为目录路径。
 
 ```bash
-anytrend merge --input-dir <dir> --output-dir <dir> [--quiet] [--no-color]
+anytrend merge --input <dir> --output <dir> [--quiet] [--no-color]
 ```
 
 ### `anytrend doctor` — 环境诊断
@@ -356,12 +356,10 @@ AnyTrend/
 │   │   ├── runner.ts            # websculpt 执行与并发调度
 │   │   ├── logger.ts            # 日志抽象（--quiet 支持）
 │   │   ├── doctor.ts            # 环境诊断（anytrend doctor）
-│   │   └── sources.ts           # 采集计划表格（anytrend sources list）
-│   ├── scripts/                 # 执行脚本
-│   │   ├── collect-daily.ts     # 每日采集 orchestrator
+│   │   ├── sources.ts           # 采集计划表格（anytrend sources list）
+│   │   ├── normalize.ts         # 单文件与批量 normalize
 │   │   ├── merge-normalized.ts  # 合并 normalized 为单一文件
-│   │   ├── normalize.ts         # 单文件 raw → normalized
-│   │   └── normalize-batch.ts   # 批量 normalize
+│   │   └── collect-daily.ts     # 每日采集 orchestrator
 │   └── types/                   # TypeScript 类型与 zod schema
 │       ├── index.ts
 │       └── schema.ts
@@ -421,9 +419,9 @@ npm install
 | 命令 | 说明 |
 |---|---|
 | `npm run collect:daily` | 批量采集 + Normalize + 合并（等同于 `anytrend build`） |
-| `npm run normalize` | 单文件 Normalize（`tsx src/scripts/normalize.ts`） |
-| `npm run normalize:batch` | 批量 Normalize（`tsx src/scripts/normalize-batch.ts`） |
-| `npm run merge:daily` | 合并 Normalized 文件（`tsx src/scripts/merge-normalized.ts`） |
+| `npm run normalize` | 单文件 Normalize（`tsx src/cli.ts normalize`） |
+| `npm run normalize:batch` | 批量 Normalize（`tsx src/cli.ts normalize-batch`） |
+| `npm run merge:daily` | 合并 Normalized 文件（`tsx src/cli.ts merge`） |
 | `npm run build` | 编译 TypeScript → `dist/` |
 | `npm run typecheck` | 类型检查 |
 | `npm run check` | Lint + Format 检查 |

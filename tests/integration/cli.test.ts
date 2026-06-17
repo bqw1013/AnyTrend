@@ -53,22 +53,22 @@ describe("CLI argument parsing", () => {
 	it("shows command help for normalize", () => {
 		const { stdout, status } = runCli(["normalize", "--help"]);
 		expect(status).toBe(0);
-		expect(stdout).toContain("--raw");
-		expect(stdout).toContain("--out");
+		expect(stdout).toContain("--input");
+		expect(stdout).toContain("--output");
 	});
 
 	it("shows command help for normalize-batch", () => {
 		const { stdout, status } = runCli(["normalize-batch", "--help"]);
 		expect(status).toBe(0);
-		expect(stdout).toContain("--input-dir");
-		expect(stdout).toContain("--output-dir");
+		expect(stdout).toContain("--input");
+		expect(stdout).toContain("--output");
 	});
 
 	it("shows command help for merge", () => {
 		const { stdout, status } = runCli(["merge", "--help"]);
 		expect(status).toBe(0);
-		expect(stdout).toContain("--input-dir");
-		expect(stdout).toContain("--output-dir");
+		expect(stdout).toContain("--input");
+		expect(stdout).toContain("--output");
 	});
 
 	it("shows command help for doctor", () => {
@@ -95,6 +95,21 @@ describe("CLI argument parsing", () => {
 		if (status !== null) {
 			expect(status).not.toBe(0);
 		}
+	});
+
+	it("rejects legacy normalize options --raw/--out", () => {
+		const { status } = runCli(["normalize", "--raw", "in.json", "--out", "out.json"]);
+		expect(status).not.toBe(0);
+	});
+
+	it("rejects legacy normalize-batch options --input-dir/--output-dir", () => {
+		const { status } = runCli(["normalize-batch", "--input-dir", "in", "--output-dir", "out"]);
+		expect(status).not.toBe(0);
+	});
+
+	it("rejects legacy merge options --input-dir/--output-dir", () => {
+		const { status } = runCli(["merge", "--input-dir", "in", "--output-dir", "out"]);
+		expect(status).not.toBe(0);
 	});
 
 	it("accepts --no-color flag without error", () => {

@@ -6,19 +6,18 @@
  * environment diagnostics, and collection plan listing.
  */
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Command } from "commander";
+import type { RunCollectDailyOptions } from "./lib/collect-daily.js";
+import { runCollectDaily } from "./lib/collect-daily.js";
 import { formatDoctorReport, runDoctor } from "./lib/doctor.js";
 import type { Logger } from "./lib/logger.js";
 import { createLogger } from "./lib/logger.js";
+import { runMerge } from "./lib/merge-normalized.js";
+import { runNormalize, runNormalizeBatch } from "./lib/normalize.js";
 import { formatSourcesTable } from "./lib/sources.js";
-import type { RunCollectDailyOptions } from "./scripts/collect-daily.js";
-import { runCollectDaily } from "./scripts/collect-daily.js";
-import { runMerge } from "./scripts/merge-normalized.js";
-import { runNormalize } from "./scripts/normalize.js";
-import { runNormalizeBatch } from "./scripts/normalize-batch.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -129,13 +128,13 @@ program
 program
 	.command("normalize")
 	.description("Normalize a single raw JSON file")
-	.requiredOption("--raw <file>", "Path to raw JSON input file")
-	.requiredOption("--out <file>", "Path to normalized output file")
+	.requiredOption("--input <file>", "Path to raw JSON input file")
+	.requiredOption("--output <file>", "Path to normalized output file")
 	.action(async (options) => {
 		const globals = program.optsWithGlobals() as GlobalOptions;
 		const logger = createCliLogger(globals);
 
-		await runNormalize(options.raw, options.out, logger);
+		await runNormalize(options.input, options.output, logger);
 	});
 
 // ── normalize-batch ──────────────────────────────────────────────────
@@ -143,13 +142,36 @@ program
 program
 	.command("normalize-batch")
 	.description("Normalize all raw JSON files in a directory")
-	.requiredOption("--input-dir <dir>", "Directory containing raw JSON files")
-	.requiredOption("--output-dir <dir>", "Directory for normalized output files")
+	.requiredOption("--input <dir>", "Directory containing raw JSON files")
+	.requiredOption("--output <dir>", "Directory for normalized output files")
 	.action(async (options) => {
 		const globals = program.optsWithGlobals() as GlobalOptions;
 		const logger = createCliLogger(globals);
 
-		await runNormalizeBatch(options.inputDir, options.outputDir, logger);
+		// Validate --input is a directory
+		if (!existsSync(options.input)) {
+			logger.error(`Input path does not exist: ${options.input}`);
+			process.exit(1);
+		}
+		if (!statSync(options.input).isDirectory()) {
+			logger.error(`Input must be a directory: ${options.input}`);
+			process.exit(1);
+		}
+
+		// Validate --output is a directory or does not exist
+		if (existsSync(options.output)) {
+			if (!statSync(options.output).isDirectory()) {
+				logger.error(`Output must be a directory: ${options.output}`);
+				process.exit(1);
+			}
+		}
+
+		const result = await runNormalizeBatch(options.input, options.output, logger);
+
+		// Exit code 1 when files were found but all failed
+		if (result.fileCount > 0 && result.successCount === 0) {
+			process.exit(1);
+		}
 	});
 
 // ── merge ────────────────────────────────────────────────────────────
@@ -157,14 +179,32 @@ program
 program
 	.command("merge")
 	.description("Merge normalized outputs into a daily report")
-	.requiredOption("--input-dir <dir>", "Directory containing normalized JSON files")
-	.requiredOption("--output-dir <dir>", "Directory for daily merged output")
+	.requiredOption("--input <dir>", "Directory containing normalized JSON files")
+	.requiredOption("--output <dir>", "Directory for daily merged output")
 	.action(async (options) => {
 		const globals = program.optsWithGlobals() as GlobalOptions;
 		const logger = createCliLogger(globals);
 
-		const date = path.basename(options.inputDir);
-		await runMerge(options.inputDir, options.outputDir, date, undefined, undefined, logger);
+		// Validate --input is a directory
+		if (!existsSync(options.input)) {
+			logger.error(`Input path does not exist: ${options.input}`);
+			process.exit(1);
+		}
+		if (!statSync(options.input).isDirectory()) {
+			logger.error(`Input must be a directory: ${options.input}`);
+			process.exit(1);
+		}
+
+		// Validate --output is a directory or does not exist
+		if (existsSync(options.output)) {
+			if (!statSync(options.output).isDirectory()) {
+				logger.error(`Output must be a directory: ${options.output}`);
+				process.exit(1);
+			}
+		}
+
+		const date = path.basename(options.input);
+		await runMerge(options.input, options.output, date, undefined, undefined, logger);
 	});
 
 // ── doctor ───────────────────────────────────────────────────────────

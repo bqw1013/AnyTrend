@@ -1,16 +1,11 @@
-#!/usr/bin/env node
 /**
  * Merge all normalized outputs for a given date into a single daily file.
  *
- * Usage:
- *   npx tsx src/scripts/merge-normalized.ts \
- *     --normalized-dir data/normalized/2026-06-16 \
- *     --out-dir data/daily/2026-06-16
+ * Used by the CLI (src/cli.ts). Not a standalone script.
  */
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Logger } from "../lib/logger.js";
 import { defaultLogger } from "../lib/logger.js";
 import type { CallResult } from "../lib/runner.js";
@@ -63,23 +58,6 @@ export interface CollectionReport {
 		item_count: number | null;
 		error: string | null;
 	}>;
-}
-
-function parseArgs(): { normalizedDir: string; outDir: string } {
-	const args = process.argv.slice(2);
-	const normalizedFlag =
-		args.indexOf("--normalized-dir") !== -1 ? args.indexOf("--normalized-dir") : args.indexOf("-n");
-	const outFlag = args.indexOf("--out-dir") !== -1 ? args.indexOf("--out-dir") : args.indexOf("-o");
-
-	const normalizedDir = args[normalizedFlag + 1];
-	const outDir = args[outFlag + 1];
-
-	if (!normalizedDir || !outDir) {
-		console.error("Usage: --normalized-dir <dir> --out-dir <dir>");
-		process.exit(1);
-	}
-
-	return { normalizedDir, outDir };
 }
 
 function argsToRecord(args: string[]): Record<string, string | number | boolean> {
@@ -226,31 +204,4 @@ export async function runMerge(
 	log.log(`Report written to ${reportPath}`);
 
 	return { merged, report };
-}
-
-async function main(): Promise<void> {
-	const { normalizedDir, outDir } = parseArgs();
-	const date = path.basename(normalizedDir);
-	await runMerge(normalizedDir, outDir, date);
-}
-
-function isMainModule(): boolean {
-	const scriptPath = fileURLToPath(import.meta.url);
-	for (const arg of process.argv.slice(1)) {
-		try {
-			if (fileURLToPath(pathToFileURL(arg).href) === scriptPath) {
-				return true;
-			}
-		} catch {
-			// Ignore invalid file URLs.
-		}
-	}
-	return false;
-}
-
-if (isMainModule()) {
-	main().catch((err) => {
-		console.error(err);
-		process.exit(1);
-	});
 }

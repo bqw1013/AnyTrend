@@ -1,16 +1,11 @@
-#!/usr/bin/env node
 /**
- * Batch normalize script.
+ * Normalize runner functions — single-file and batch.
  *
- * Usage:
- *   npx tsx src/scripts/normalize-batch.ts \
- *     --raw-dir data/raw/2026-06-15 \
- *     --out-dir data/normalized/2026-06-15
+ * Used by the CLI (src/cli.ts). Not a standalone script.
  */
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
 import { getAdapter } from "../adapters/index.js";
 import { nowIso } from "../adapters/utils.js";
 import type { Logger } from "../lib/logger.js";
@@ -18,30 +13,52 @@ import { defaultLogger } from "../lib/logger.js";
 import type { NormalizedOutput } from "../types/index.js";
 import { adapterOutputSchema } from "../types/schema.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const pkg = JSON.parse(readFileSync(path.join(__dirname, "..", "..", "package.json"), "utf-8")) as {
-	version: string;
-};
-const VERSION = pkg.version;
+const VERSION = (
+	JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf-8")) as { version: string }
+).version;
 
-function parseArgs(): { rawDir: string; outDir: string } {
-	const args = process.argv.slice(2);
-	const rawFlag = args.indexOf("--raw-dir") !== -1 ? args.indexOf("--raw-dir") : args.indexOf("-i");
-	const outFlag = args.indexOf("--out-dir") !== -1 ? args.indexOf("--out-dir") : args.indexOf("-o");
+export async function runNormalize(rawPath: string, outPath: string, logger?: Logger): Promise<void> {
+	const log = logger ?? defaultLogger;
 
-	const rawDir = args[rawFlag + 1];
-	const outDir = args[outFlag + 1];
+	const raw = JSON.parse(readFileSync(rawPath, "utf-8")) as {
+		command?: string;
+	} & Record<string, unknown>;
 
-	if (!rawDir || !outDir) {
-		console.error("Usage: --raw-dir <dir> --out-dir <dir>");
-		process.exit(1);
+	const command = raw.command;
+	if (!command) {
+		throw new Error(`No 'command' field found in ${rawPath}`);
 	}
 
-	return { rawDir, outDir };
+	const adapter = await getAdapter(command);
+	const adapterOutput = adapter.normalize(raw);
+
+	const parsed = adapterOutputSchema.safeParse(adapterOutput);
+	if (!parsed.success) {
+		throw new Error(`Adapter output for ${command} from ${rawPath} does not match schema:\n${parsed.error.message}`);
+	}
+
+	const result: NormalizedOutput = {
+		version: VERSION,
+		generated_at: nowIso(),
+		...adapterOutput,
+	};
+
+	mkdirSync(path.dirname(outPath), { recursive: true });
+	writeFileSync(outPath, `${JSON.stringify(result, null, 2)}\n`, "utf-8");
+	log.log(`Normalized: ${rawPath} -> ${outPath}`);
 }
 
-export async function runNormalizeBatch(rawDir: string, outDir: string, logger?: Logger): Promise<void> {
+export interface NormalizeBatchResult {
+	successCount: number;
+	failCount: number;
+	fileCount: number;
+}
+
+export async function runNormalizeBatch(
+	rawDir: string,
+	outDir: string,
+	logger?: Logger,
+): Promise<NormalizeBatchResult> {
 	const log = logger ?? defaultLogger;
 
 	mkdirSync(outDir, { recursive: true });
@@ -52,7 +69,7 @@ export async function runNormalizeBatch(rawDir: string, outDir: string, logger?:
 
 	if (files.length === 0) {
 		log.log(`No JSON files found in ${rawDir}`);
-		return;
+		return { successCount: 0, failCount: 0, fileCount: 0 };
 	}
 
 	let successCount = 0;
@@ -101,30 +118,5 @@ export async function runNormalizeBatch(rawDir: string, outDir: string, logger?:
 	}
 
 	log.log(`\nDone. Success: ${successCount}, Failed: ${failCount}`);
-}
-
-async function main(): Promise<void> {
-	const { rawDir, outDir } = parseArgs();
-	await runNormalizeBatch(rawDir, outDir);
-}
-
-function isMainModule(): boolean {
-	const scriptPath = fileURLToPath(import.meta.url);
-	for (const arg of process.argv.slice(1)) {
-		try {
-			if (fileURLToPath(pathToFileURL(arg).href) === scriptPath) {
-				return true;
-			}
-		} catch {
-			// Ignore invalid file URLs.
-		}
-	}
-	return false;
-}
-
-if (isMainModule()) {
-	main().catch((err) => {
-		console.error(err);
-		process.exit(1);
-	});
+	return { successCount, failCount, fileCount: files.length };
 }

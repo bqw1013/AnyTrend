@@ -18,14 +18,14 @@ export async function runNormalize(options: RunNormalizeOptions): Promise<void> 
 	const { input, output } = options;
 	await execFilePromise(
 		"npx",
-		["tsx", "src/scripts/normalize.ts", "--input", input, "--output", output],
+		["tsx", "src/cli.ts", "normalize", "--input", input, "--output", output],
 		DEFAULT_NORMALIZE_TIMEOUT_MS,
 	);
 }
 
 export interface RunNormalizeBatchOptions {
-	rawDir: string;
-	outDir: string;
+	input: string;
+	output: string;
 }
 
 const DEFAULT_NORMALIZE_BATCH_TIMEOUT_MS = 60_000;
@@ -34,10 +34,10 @@ const DEFAULT_NORMALIZE_BATCH_TIMEOUT_MS = 60_000;
  * Runs the batch normalize script against the given raw and output directories.
  */
 export async function runNormalizeBatch(options: RunNormalizeBatchOptions): Promise<void> {
-	const { rawDir, outDir } = options;
+	const { input, output } = options;
 	await execFilePromise(
 		"npx",
-		["tsx", "src/scripts/normalize-batch.ts", "--raw-dir", rawDir, "--out-dir", outDir],
+		["tsx", "src/cli.ts", "normalize-batch", "--input", input, "--output", output],
 		DEFAULT_NORMALIZE_BATCH_TIMEOUT_MS,
 	);
 }
