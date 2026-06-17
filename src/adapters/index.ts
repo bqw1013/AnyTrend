@@ -18,6 +18,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
+ * Adapter module extension inferred from the current module URL.
+ * Resolves to `.ts` when running under tsx/vitest and `.js` in the compiled dist build,
+ * so `getAdapter` and `listAvailableAdapters` find the correct files in both environments.
+ */
+const ADAPTER_EXTENSION = import.meta.url.endsWith(".ts") ? ".ts" : ".js";
+
+/**
  * Converts a WebSculpt-style command name to the corresponding adapter module name.
  * Example: `baidu/get-hot` -> `baidu-get-hot`.
  */
@@ -44,7 +51,7 @@ export function moduleToCommand(moduleName: string): string {
  */
 export async function getAdapter(command: string): Promise<AdapterModule> {
 	const moduleName = commandToModule(command);
-	const modulePath = path.join(__dirname, `${moduleName}.ts`);
+	const modulePath = path.join(__dirname, `${moduleName}${ADAPTER_EXTENSION}`);
 	const moduleUrl = pathToFileURL(modulePath).href;
 
 	try {
@@ -71,8 +78,10 @@ export async function getAdapter(command: string): Promise<AdapterModule> {
  */
 export function listAvailableAdapters(): string[] {
 	const files = readdirSync(__dirname);
+	const indexFile = `index${ADAPTER_EXTENSION}`;
+	const utilsFile = `utils${ADAPTER_EXTENSION}`;
 	return files
-		.filter((f) => f.endsWith(".ts") && f !== "index.ts" && f !== "utils.ts" && !f.startsWith("_"))
-		.map((f) => moduleToCommand(f.replace(/\.ts$/, "")))
+		.filter((f) => f.endsWith(ADAPTER_EXTENSION) && f !== indexFile && f !== utilsFile && !f.startsWith("_"))
+		.map((f) => moduleToCommand(f.replace(new RegExp(`\\${ADAPTER_EXTENSION}$`), "")))
 		.sort();
 }
