@@ -109,6 +109,12 @@ export async function runMerge(
 	const digestDir = path.join(outDir, "digest");
 	mkdirSync(digestDir, { recursive: true });
 
+	// The runner estimates item_count from the raw websculpt output shape, which
+	// can be inaccurate for adapters that flatten nested arrays. We record the
+	// authoritative count from each successful normalized file and use it when
+	// building the collection report.
+	const normalizedItemCounts = new Map<string, number>();
+
 	for (const file of files) {
 		const filePath = path.join(normalizedDir, file);
 		let output: NormalizedOutput;
@@ -156,6 +162,7 @@ export async function runMerge(
 		totalItems += output.items.length;
 
 		const outputName = file.replace(/\.json$/, "");
+		normalizedItemCounts.set(outputName, output.items.length);
 		try {
 			const digestMarkdown = renderDigest(output, sourceMeta.angle);
 			const digestPath = path.join(digestDir, `${outputName}.md`);
@@ -202,7 +209,10 @@ export async function runMerge(
 				resolved_args: r.resolvedArgs,
 				status: r.status,
 				duration_ms: r.durationMs,
-				item_count: r.itemCount,
+				// Prefer the authoritative normalized item count; fall back to the
+				// runner's raw-level estimate for calls with no successful normalized
+				// output (e.g. skipped or failed normalization).
+				item_count: normalizedItemCounts.get(r.call.outputName) ?? r.itemCount,
 				error: r.error,
 			})) ?? [],
 	};

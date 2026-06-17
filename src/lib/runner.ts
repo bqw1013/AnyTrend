@@ -122,6 +122,10 @@ export async function runWebsculptCall(
 			const durationMs = Date.now() - start;
 			writeFileSync(outputPath, stdout, "utf-8");
 
+			// This is a best-effort, raw-level item count derived from the websculpt
+			// output shape. It can be inaccurate for adapters that flatten nested
+			// arrays (e.g. Replicate sections.models). The merge stage replaces it
+			// with the authoritative count from the normalized JSON when available.
 			let itemCount: number | null = null;
 			if (!error) {
 				try {
