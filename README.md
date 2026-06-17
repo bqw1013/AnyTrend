@@ -198,6 +198,8 @@ anytrend build --date 2026-06-16 --quiet
 
 采集 + Normalize + 合并，一步完成（等价于 `collect` + `normalize-batch` + `merge` 的顺序执行）。
 
+默认以**今天日期**作为目录名，输出到 `data/raw/YYYY-MM-DD/`、`data/normalized/YYYY-MM-DD/` 和 `data/daily/YYYY-MM-DD/`。
+
 ```bash
 anytrend build [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
                [--skip-collect] [--skip-normalize] [--quiet] [--no-color]
