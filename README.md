@@ -211,6 +211,38 @@ anytrend build [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
 | `--skip-collect` | false | 跳过采集，仅执行 Normalize + Merge |
 | `--skip-normalize` | false | 跳过 Normalize + Merge，仅采集 |
 
+**示例：**
+
+```bash
+# 默认：采集今天、并发 8、延迟 1500ms
+anytrend build
+
+# 指定日期，降低并发和延迟以适配弱网环境
+anytrend build --date 2026-06-16 --concurrency 4 --delay 2000
+
+# 只采集原始数据，不 Normalize / 合并
+anytrend build --skip-normalize
+
+# 已有原始数据，只执行 Normalize + 合并
+anytrend build --skip-collect
+
+# 静默模式：不打印每条命令进度，只输出最终摘要
+anytrend build --quiet
+```
+
+**预期输出文件：**
+
+```
+data/
+├── raw/2026-06-17/              # WebSculpt 原始 JSON
+├── normalized/2026-06-17/       # 符合 schema-v1 的标准 JSON
+└── daily/2026-06-17/
+    ├── daily-merged.json        # 合并后的单一文件
+    └── collection-report.json   # 调用统计与失败详情
+```
+
+---
+
 ### `anytrend collect` — 仅采集
 
 只运行 WebSculpt 采集步骤，不执行 Normalize 和 Merge。适用于只需要原始数据、后续手动 Normalize 的场景。
@@ -225,6 +257,28 @@ anytrend collect [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--qui
 | `--concurrency` | 8 | 最大并发调用数 |
 | `--delay` | 1500 | 同平台调用间隔（毫秒） |
 
+**示例：**
+
+```bash
+# 采集今天的原始数据
+anytrend collect
+
+# 指定日期和更低的并发数
+anytrend collect --date 2026-06-17 --concurrency 4
+```
+
+**预期输出：**
+
+```
+data/raw/2026-06-17/
+├── baidu-get-hot.json
+├── github-get-trending.json
+├── zhihu-get-hot.json
+└── ...
+```
+
+---
+
 ### `anytrend normalize` — 单文件 Normalize
 
 将单个 raw JSON 文件转换为统一格式的 normalized 输出。
@@ -232,6 +286,73 @@ anytrend collect [--date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>] [--qui
 ```bash
 anytrend normalize --input <file> --output <file> [--quiet] [--no-color]
 ```
+
+**示例：**
+
+```bash
+anytrend normalize \
+  --input data/raw/2026-06-17/baidu-get-hot.json \
+  --output data/normalized/2026-06-17/baidu-get-hot.json
+```
+
+**输入文件格式（raw）：**
+
+```json
+{
+  "command": "baidu/get-hot",
+  "success": true,
+  "meta": { "duration": 177 },
+  "data": {
+    "tab": "realtime",
+    "total": 50,
+    "items": [
+      {
+        "rank": 1,
+        "title": "3亿北斗工程现「脆皮底座」",
+        "heatIndex": "7808179",
+        "description": "山东济潍高速沿线，有人用手掰开了一个国家重点工程的底座。",
+        "tag": "热",
+        "url": "https://www.baidu.com/s?wd=...",
+        "trend": "same"
+      }
+    ]
+  }
+}
+```
+
+**输出文件格式（normalized）：**
+
+```json
+{
+  "version": "1.0",
+  "generated_at": "2026-06-17T08:46:32Z",
+  "command": "baidu/get-hot",
+  "platform": "baidu",
+  "language": "zh",
+  "category": "zh-general",
+  "board_type": "hot-search",
+  "response_meta": {
+    "success": true,
+    "duration": 177,
+    "raw_total": 50,
+    "error": null
+  },
+  "items": [
+    {
+      "id": "baidu:realtime:1:3亿北斗工程现「脆皮底座」",
+      "rank": 1,
+      "title": "3亿北斗工程现「脆皮底座」",
+      "url": "https://www.baidu.com/s?wd=...",
+      "heat": "781万",
+      "heat_raw": 7808179,
+      "summary": "山东济潍高速沿线，有人用手掰开了一个国家重点工程的底座。",
+      "tags": ["热"]
+    }
+  ]
+}
+```
+
+---
 
 ### `anytrend normalize-batch` — 批量 Normalize
 
@@ -241,6 +362,28 @@ anytrend normalize --input <file> --output <file> [--quiet] [--no-color]
 anytrend normalize-batch --input <dir> --output <dir> [--quiet] [--no-color]
 ```
 
+**示例：**
+
+```bash
+anytrend normalize-batch \
+  --input data/raw/2026-06-17 \
+  --output data/normalized/2026-06-17
+```
+
+**预期输出：**
+
+```
+data/normalized/2026-06-17/
+├── baidu-get-hot.json
+├── github-get-trending.json
+├── zhihu-get-hot.json
+└── ...
+```
+
+**注意：** 如果某个文件 Normalize 失败，会打印错误但继续处理其他文件；如果目录中所有文件都失败，CLI 退出码为 `1`。
+
+---
+
 ### `anytrend merge` — 合并 Normalized 输出
 
 将 normalized 目录下的所有文件合并为 `daily-merged.json` 和 `collection-report.json`。`--input` 和 `--output` 均为目录路径。
@@ -248,6 +391,49 @@ anytrend normalize-batch --input <dir> --output <dir> [--quiet] [--no-color]
 ```bash
 anytrend merge --input <dir> --output <dir> [--quiet] [--no-color]
 ```
+
+**示例：**
+
+```bash
+anytrend merge \
+  --input data/normalized/2026-06-17 \
+  --output data/daily/2026-06-17
+```
+
+**预期输出：**
+
+```
+data/daily/2026-06-17/
+├── daily-merged.json        # 所有 normalized 文件聚合后的数据
+└── collection-report.json   # 统计：成功/失败条数、平台覆盖、错误明细
+```
+
+`daily-merged.json` 的简化结构示例：
+
+```json
+{
+  "date": "2026-06-17",
+  "generated_at": "2026-06-17T09:00:00Z",
+  "sources": [
+    {
+      "command": "baidu/get-hot",
+      "platform": "baidu",
+      "category": "zh-general",
+      "board_type": "hot-search",
+      "items": [...]
+    },
+    {
+      "command": "github/get-trending",
+      "platform": "github",
+      "category": "en-ai",
+      "board_type": "trending",
+      "items": [...]
+    }
+  ]
+}
+```
+
+---
 
 ### `anytrend doctor` — 环境诊断
 
@@ -262,6 +448,32 @@ anytrend doctor [--no-color]
 
 退出码：全部检查通过时返回 `0`，任一检查失败时返回 `1`（不中止，会跑完所有检查再返回聚合结果）。可在脚本中用 `anytrend doctor && anytrend build` 做前置条件判断。
 
+**示例：**
+
+```bash
+anytrend doctor
+```
+
+**预期输出（正常）：**
+
+```
+Running environment diagnostics...
+
+  ✓ Node.js: v22.20.0 (requires >=22)
+  ✓ websculpt CLI: 0.3.1
+  ✓ WebSculpt commands: All 27 required commands installed
+
+Environment is ready.
+```
+
+**典型用法：**
+
+```bash
+anytrend doctor && anytrend build
+```
+
+---
+
 ### `anytrend sources list` — 查看采集计划
 
 ```bash
@@ -269,6 +481,32 @@ anytrend sources list [--no-color]
 ```
 
 以表格形式展示所有采集源，包含命令名、采集角度、是否需要浏览器、是否需要登录。
+
+**示例：**
+
+```bash
+anytrend sources list
+```
+
+**预期输出（节选）：**
+
+```
+Command                   Angle                           Browser  Login
+--------------------------------------------------------------------------
+baidu/get-hot             百度实时热搜                          no       no
+bilibili/get-hot          Bilibili 热搜                     no       no
+douyin/get-hot            抖音综合热门视频                        yes      yes
+weibo/get-hot-search      微博热搜                            no       no
+zhihu/get-hot             知乎热榜                            yes      yes
+github/get-trending       GitHub Weekly Trending          no       no
+hackernews/get-top        HackerNews Top by Points        no       no
+producthunt/get-trending  Product Hunt 昨日榜单               yes      no
+...
+
+Total: 55 sources
+Browser required: 43
+Login required: 15
+```
 
 ---
 
