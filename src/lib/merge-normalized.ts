@@ -10,6 +10,7 @@ import type { Logger } from "../lib/logger.js";
 import { defaultLogger } from "../lib/logger.js";
 import type { CallResult } from "../lib/runner.js";
 import type { NormalizedItem, NormalizedOutput } from "../types/index.js";
+import { renderDigest } from "./digest-renderer.js";
 
 export interface MergedSourceMeta {
 	command: string;
@@ -105,6 +106,8 @@ export async function runMerge(
 
 	let totalItems = 0;
 	const items: MergedItem[] = [];
+	const digestDir = path.join(outDir, "digest");
+	mkdirSync(digestDir, { recursive: true });
 
 	for (const file of files) {
 		const filePath = path.join(normalizedDir, file);
@@ -151,6 +154,16 @@ export async function runMerge(
 			});
 		}
 		totalItems += output.items.length;
+
+		const outputName = file.replace(/\.json$/, "");
+		try {
+			const digestMarkdown = renderDigest(output, sourceMeta.angle);
+			const digestPath = path.join(digestDir, `${outputName}.md`);
+			writeFileSync(digestPath, digestMarkdown, "utf-8");
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			log.warn(`Digest render/write failed for ${outputName}: ${message}`);
+		}
 	}
 
 	const successfulCalls = callResults?.filter((r) => r.status === "success").length ?? 0;
