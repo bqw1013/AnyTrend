@@ -13,6 +13,8 @@ import { runMerge } from "../lib/merge-normalized.js";
 import { runNormalizeBatch } from "../lib/normalize.js";
 import { runAllCalls } from "../lib/runner.js";
 
+const DEFAULT_DATA_DIR = "anytrend-data";
+
 export interface RunCollectDailyOptions {
 	date: string;
 	concurrency: number;
@@ -26,9 +28,9 @@ export async function runCollectDaily(options: RunCollectDailyOptions): Promise<
 	const logger = options.logger ?? defaultLogger;
 	const { date, concurrency, interCallDelayMs, skipCollect, skipNormalize } = options;
 
-	const rawDir = path.join("data", "raw", date);
-	const normalizedDir = path.join("data", "normalized", date);
-	const dailyDir = path.join("data", "daily", date);
+	const rawDir = path.join(DEFAULT_DATA_DIR, "raw", date);
+	const normalizedDir = path.join(DEFAULT_DATA_DIR, "normalized", date);
+	const dailyDir = path.join(DEFAULT_DATA_DIR, "daily", date);
 
 	mkdirSync(rawDir, { recursive: true });
 	mkdirSync(normalizedDir, { recursive: true });

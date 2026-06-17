@@ -134,10 +134,10 @@ anytrend build --quiet
 
 执行后会生成：
 
-- `data/raw/YYYY-MM-DD/` — websculpt 原始 JSON
-- `data/normalized/YYYY-MM-DD/` — 符合 schema-v1 的标准 JSON
-- `data/daily/YYYY-MM-DD/daily-merged.json` — 合并后的单一文件（含 `_source` 来源元数据）
-- `data/daily/YYYY-MM-DD/collection-report.json` — 调用统计与失败详情
+- `anytrend-data/raw/YYYY-MM-DD/` — websculpt 原始 JSON
+- `anytrend-data/normalized/YYYY-MM-DD/` — 符合 schema-v1 的标准 JSON
+- `anytrend-data/daily/YYYY-MM-DD/daily-merged.json` — 合并后的单一文件（含 `_source` 来源元数据）
+- `anytrend-data/daily/YYYY-MM-DD/collection-report.json` — 调用统计与失败详情
 
 ### 5. 查看采集计划
 
@@ -154,13 +154,13 @@ anytrend collect --archive-date 2026-06-17
 
 # 只 Normalize 已有原始数据
 anytrend normalize-batch \
-  --input data/raw/2026-06-17 \
-  --output data/normalized/2026-06-17
+  --input anytrend-data/raw/2026-06-17 \
+  --output anytrend-data/normalized/2026-06-17
 
 # 只合并已 Normalize 的数据
 anytrend merge \
-  --input data/normalized/2026-06-17 \
-  --output data/daily/2026-06-17
+  --input anytrend-data/normalized/2026-06-17 \
+  --output anytrend-data/daily/2026-06-17
 ```
 
 ---
@@ -198,7 +198,7 @@ anytrend build --archive-date 2026-06-16 --quiet
 
 采集 + Normalize + 合并，一步完成（等价于 `collect` + `normalize-batch` + `merge` 的顺序执行）。
 
-默认以**今天日期**作为归档目录名，输出到 `data/raw/YYYY-MM-DD/`、`data/normalized/YYYY-MM-DD/` 和 `data/daily/YYYY-MM-DD/`。
+默认以**今天日期**作为归档目录名，输出到 `anytrend-data/raw/YYYY-MM-DD/`、`anytrend-data/normalized/YYYY-MM-DD/` 和 `anytrend-data/daily/YYYY-MM-DD/`。
 
 ```bash
 anytrend build [--archive-date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
@@ -214,7 +214,7 @@ anytrend build [--archive-date <YYYY-MM-DD>] [--concurrency <n>] [--delay <ms>]
 | `--skip-normalize` | false | 跳过 Normalize + Merge，仅采集 |
 
 > **关于 `--archive-date` 的注意事项：**
-> `--archive-date` 只决定输出目录名（`data/raw/YYYY-MM-DD/` 等）和报告中的日期字段，**不会传给 WebSculpt 命令作为历史日期参数**。
+> `--archive-date` 只决定输出目录名（`anytrend-data/raw/YYYY-MM-DD/` 等）和报告中的日期字段，**不会传给 WebSculpt 命令作为历史日期参数**。
 > 因此大多数平台采集的是你运行命令那一刻的实时数据（如当前热榜），而不是指定日期的历史数据。
 > 少数命令有独立日期逻辑（如 `producthunt/get-trending` 使用太平洋时间昨日），与 `--archive-date` 无关。
 
@@ -240,7 +240,7 @@ anytrend build --quiet
 **预期输出文件：**
 
 ```
-data/
+anytrend-data/
 ├── raw/2026-06-17/              # WebSculpt 原始 JSON
 ├── normalized/2026-06-17/       # 符合 schema-v1 的标准 JSON
 └── daily/2026-06-17/
@@ -279,7 +279,7 @@ anytrend collect --archive-date 2026-06-17 --concurrency 4
 **预期输出：**
 
 ```
-data/raw/2026-06-17/
+anytrend-data/raw/2026-06-17/
 ├── baidu-get-hot.json
 ├── github-get-trending.json
 ├── zhihu-get-hot.json
@@ -300,8 +300,8 @@ anytrend normalize --input <file> --output <file> [--quiet] [--no-color]
 
 ```bash
 anytrend normalize \
-  --input data/raw/2026-06-17/baidu-get-hot.json \
-  --output data/normalized/2026-06-17/baidu-get-hot.json
+  --input anytrend-data/raw/2026-06-17/baidu-get-hot.json \
+  --output anytrend-data/normalized/2026-06-17/baidu-get-hot.json
 ```
 
 **输入文件格式（raw）：**
@@ -375,14 +375,14 @@ anytrend normalize-batch --input <dir> --output <dir> [--quiet] [--no-color]
 
 ```bash
 anytrend normalize-batch \
-  --input data/raw/2026-06-17 \
-  --output data/normalized/2026-06-17
+  --input anytrend-data/raw/2026-06-17 \
+  --output anytrend-data/normalized/2026-06-17
 ```
 
 **预期输出：**
 
 ```
-data/normalized/2026-06-17/
+anytrend-data/normalized/2026-06-17/
 ├── baidu-get-hot.json
 ├── github-get-trending.json
 ├── zhihu-get-hot.json
@@ -405,14 +405,14 @@ anytrend merge --input <dir> --output <dir> [--quiet] [--no-color]
 
 ```bash
 anytrend merge \
-  --input data/normalized/2026-06-17 \
-  --output data/daily/2026-06-17
+  --input anytrend-data/normalized/2026-06-17 \
+  --output anytrend-data/daily/2026-06-17
 ```
 
 **预期输出：**
 
 ```
-data/daily/2026-06-17/
+anytrend-data/daily/2026-06-17/
 ├── daily-merged.json        # 所有 normalized 文件聚合后的数据
 └── collection-report.json   # 统计：成功/失败条数、平台覆盖、错误明细
 ```
@@ -577,7 +577,7 @@ RUN_E2E_LIVE=1 npm run test:e2e
 ### 推荐调度方式
 
 - **本地开发/个人使用**：`cron` 或 `systemd timer` 每天固定时间执行 `npm run collect:daily`。
-- **团队协作**：GitHub Actions 每日定时运行，将 `data/daily/YYYY-MM-DD/daily-merged.json` 喂给 LLM 生成 Markdown 日报。
+- **团队协作**：GitHub Actions 每日定时运行，将 `anytrend-data/daily/YYYY-MM-DD/daily-merged.json` 喂给 LLM 生成 Markdown 日报。
 - **高频监控**：可配置多时段采集，对比榜单变化生成趋势图。
 
 > LLM 提示词模板和 Markdown 日报渲染器将在后续版本中补充。欢迎提交 Issue 或 PR 一起设计。
@@ -628,7 +628,7 @@ AnyTrend/
 │       ├── normalize-batch-pipeline.test.ts
 │       └── live/
 │           └── websculpt-commands.test.ts
-├── data/                        # 运行数据
+├── anytrend-data/                        # 运行数据
 │   ├── raw/YYYY-MM-DD/
 │   ├── normalized/YYYY-MM-DD/
 │   └── daily/YYYY-MM-DD/        # 合并后的日报与采集报告

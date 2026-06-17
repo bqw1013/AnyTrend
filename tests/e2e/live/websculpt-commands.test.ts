@@ -11,8 +11,8 @@ const describeOrSkip = runE2eLive ? describe : describe.skip;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const rawDir = path.join(__dirname, "..", "..", "..", "data", "raw", "e2e");
-const normalizedDir = path.join(__dirname, "..", "..", "..", "data", "normalized", "e2e");
+const rawDir = path.join(__dirname, "..", "..", "..", "anytrend-data", "raw", "e2e");
+const normalizedDir = path.join(__dirname, "..", "..", "..", "anytrend-data", "normalized", "e2e");
 
 const COMMANDS = [
 	"baidu/get-hot",

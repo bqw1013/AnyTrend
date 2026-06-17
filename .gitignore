@@ -28,6 +28,6 @@ Thumbs.db
 .websculpt/
 
 # Data directories (keep structure, ignore contents if needed)
-# data/raw/*/
-# data/normalized/*/
-data/
+# anytrend-data/raw/*/
+# anytrend-data/normalized/*/
+anytrend-data/
