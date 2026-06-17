@@ -136,19 +136,54 @@ async function checkWebsculptCli(): Promise<DoctorCheckResult> {
 	};
 }
 
+interface WebsculptCommandListJson {
+	success: boolean;
+	commands: Array<{ domain: string; action: string }>;
+}
+
 /**
- * Parse `websculpt command list` output to extract registered command names.
- * Expected format: each line starts with the command name (e.g. "baidu/get-hot").
+ * Parse `websculpt command list --format json` output.
  */
-function parseCommandList(stdout: string): Set<string> {
+export function parseCommandListJson(stdout: string): Set<string> {
+	const commands = new Set<string>();
+	try {
+		const parsed = JSON.parse(stdout) as WebsculptCommandListJson;
+		if (!parsed.success || !Array.isArray(parsed.commands)) {
+			return commands;
+		}
+		for (const cmd of parsed.commands) {
+			if (cmd.domain && cmd.action) {
+				commands.add(`${cmd.domain}/${cmd.action}`);
+			}
+		}
+	} catch {
+		// Invalid JSON: return empty set so caller can fall back.
+	}
+	return commands;
+}
+
+/**
+ * Parse `websculpt command list` text output to extract registered command names.
+ * Current format: each line starts with "websculpt <platform> <action> ...".
+ * Legacy format (kept for compatibility): "platform/action".
+ */
+export function parseCommandList(stdout: string): Set<string> {
 	const commands = new Set<string>();
 	for (const line of stdout.split("\n")) {
 		const trimmed = line.trim();
 		if (!trimmed) continue;
-		// Command names look like "platform/action"
-		const match = /^([a-z][a-z0-9]*\/[a-z][a-z0-9-]*)/i.exec(trimmed);
-		if (match?.[1]) {
-			commands.add(match[1]);
+		// Skip the table header line.
+		if (trimmed.startsWith("Command")) continue;
+		// Current websculpt output: "websculpt baidu get-hot ..."
+		const match = /^websculpt\s+([a-z][a-z0-9-]*)\s+([a-z][a-z0-9-]*)\b/i.exec(trimmed);
+		if (match?.[1] && match?.[2]) {
+			commands.add(`${match[1]}/${match[2]}`);
+			continue;
+		}
+		// Legacy format fallback: "baidu/get-hot"
+		const legacyMatch = /^([a-z][a-z0-9]*\/[a-z][a-z0-9-]*)/i.exec(trimmed);
+		if (legacyMatch?.[1]) {
+			commands.add(legacyMatch[1]);
 		}
 	}
 	return commands;
@@ -156,19 +191,30 @@ function parseCommandList(stdout: string): Set<string> {
 
 /**
  * Check that every command in COLLECT_PLAN is registered in websculpt.
+ * Prefers JSON output and falls back to text parsing.
  */
 async function checkRequiredCommands(): Promise<DoctorCheckResult> {
-	const { stdout, code } = await execCommand("websculpt", ["command", "list"], 15_000);
+	// Try JSON first for stability.
+	const jsonResult = await execCommand("websculpt", ["command", "list", "--format", "json"], 15_000);
+	let installed: Set<string> | undefined;
 
-	if (code !== 0 || !stdout.trim()) {
-		return {
-			label: "WebSculpt commands",
-			passed: false,
-			message: "Could not run 'websculpt command list' — is websculpt installed and configured?",
-		};
+	if (jsonResult.code === 0 && jsonResult.stdout.trim()) {
+		installed = parseCommandListJson(jsonResult.stdout);
 	}
 
-	const installed = parseCommandList(stdout);
+	// Fall back to text output if JSON did not yield any commands.
+	if (!installed || installed.size === 0) {
+		const textResult = await execCommand("websculpt", ["command", "list"], 15_000);
+		if (textResult.code !== 0 || !textResult.stdout.trim()) {
+			return {
+				label: "WebSculpt commands",
+				passed: false,
+				message: "Could not run 'websculpt command list' — is websculpt installed and configured?",
+			};
+		}
+		installed = parseCommandList(textResult.stdout);
+	}
+
 	const required = new Set(COLLECT_PLAN.map((c: CollectCall) => c.command));
 	const missing: string[] = [];
 

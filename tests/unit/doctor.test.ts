@@ -1,6 +1,71 @@
 import { describe, expect, it } from "vitest";
 import type { DoctorReport } from "../../src/lib/doctor.js";
-import { formatDoctorReport } from "../../src/lib/doctor.js";
+import { formatDoctorReport, parseCommandList, parseCommandListJson } from "../../src/lib/doctor.js";
+
+describe("parseCommandListJson", () => {
+	it("parses valid websculpt JSON output", () => {
+		const stdout = JSON.stringify({
+			success: true,
+			commands: [
+				{ domain: "baidu", action: "get-hot" },
+				{ domain: "github", action: "get-trending" },
+				{ domain: "google", action: "get-trending" },
+			],
+		});
+		const commands = parseCommandListJson(stdout);
+		expect(commands).toEqual(new Set(["baidu/get-hot", "github/get-trending", "google/get-trending"]));
+	});
+
+	it("ignores entries missing domain or action", () => {
+		const stdout = JSON.stringify({
+			success: true,
+			commands: [{ domain: "baidu", action: "get-hot" }, { domain: "", action: "get-hot" }, { domain: "github" }],
+		});
+		const commands = parseCommandListJson(stdout);
+		expect(commands).toEqual(new Set(["baidu/get-hot"]));
+	});
+
+	it("returns empty set when success is false", () => {
+		const stdout = JSON.stringify({ success: false, commands: [{ domain: "baidu", action: "get-hot" }] });
+		const commands = parseCommandListJson(stdout);
+		expect(commands).toEqual(new Set());
+	});
+
+	it("returns empty set for invalid JSON", () => {
+		const commands = parseCommandListJson("not json");
+		expect(commands).toEqual(new Set());
+	});
+});
+
+describe("parseCommandList", () => {
+	it("parses current websculpt output format", () => {
+		const stdout = [
+			"Command                             Source  Browser  Login  Description",
+			"websculpt baidu get-hot             user    no       no     Fetch Baidu hot-search rankings.",
+			"websculpt github get-trending       user    no       no     Fetch trending GitHub repositories.",
+			"websculpt google get-trending       user    yes      no     Fetch Google Trends daily trending searches.",
+		].join("\n");
+		const commands = parseCommandList(stdout);
+		expect(commands).toEqual(new Set(["baidu/get-hot", "github/get-trending", "google/get-trending"]));
+	});
+
+	it("parses legacy platform/action format", () => {
+		const stdout = ["baidu/get-hot", "github/get-trending", "google/get-trending"].join("\n");
+		const commands = parseCommandList(stdout);
+		expect(commands).toEqual(new Set(["baidu/get-hot", "github/get-trending", "google/get-trending"]));
+	});
+
+	it("ignores empty lines and headers", () => {
+		const stdout = ["", "Command  Source", "", "websculpt weibo get-hot-search  user"].join("\n");
+		const commands = parseCommandList(stdout);
+		expect(commands).toEqual(new Set(["weibo/get-hot-search"]));
+	});
+
+	it("returns empty set for unrelated output", () => {
+		const commands = parseCommandList("No commands installed.");
+		expect(commands).toEqual(new Set());
+	});
+});
 
 describe("formatDoctorReport", () => {
 	const allPassedReport: DoctorReport = {
