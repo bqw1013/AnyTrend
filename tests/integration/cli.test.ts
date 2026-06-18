@@ -77,6 +77,13 @@ describe("CLI argument parsing", () => {
 		expect(stdout).toContain("Verify");
 	});
 
+	it("shows command help for setup", () => {
+		const { stdout, status } = runCli(["setup", "--help"]);
+		expect(status).toBe(0);
+		expect(stdout).toContain("Usage:");
+		expect(stdout).toContain("--dry-run");
+	});
+
 	it("shows command help for sources", () => {
 		const { stdout, status } = runCli(["sources", "--help"]);
 		expect(status).toBe(0);

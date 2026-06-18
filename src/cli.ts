@@ -17,6 +17,7 @@ import type { Logger } from "./lib/logger.js";
 import { createLogger } from "./lib/logger.js";
 import { runMerge } from "./lib/merge-normalized.js";
 import { runNormalize, runNormalizeBatch } from "./lib/normalize.js";
+import { runSetup } from "./lib/setup.js";
 import { formatSourcesTable } from "./lib/sources.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -225,6 +226,22 @@ program
 
 		if (!report.allPassed) {
 			process.exitCode = 1;
+		}
+	});
+
+// ── setup ────────────────────────────────────────────────────────────
+
+program
+	.command("setup")
+	.description("Import bundled WebSculpt commands into your local command library")
+	.option("--dry-run", "Print the import command without executing it", false)
+	.action(async (options) => {
+		const globals = program.optsWithGlobals() as GlobalOptions;
+		const logger = createCliLogger(globals);
+
+		const result = await runSetup({ dryRun: options.dryRun, logger });
+		if (!result.success) {
+			process.exit(1);
 		}
 	});
 
