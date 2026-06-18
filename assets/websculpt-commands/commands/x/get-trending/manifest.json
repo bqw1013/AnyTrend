@@ -1,0 +1,28 @@
+{
+  "id": "x-get-trending",
+  "domain": "x",
+  "action": "get-trending",
+  "runtime": "browser",
+  "description": "Fetch X (Twitter) trending topics from the Explore page. Supports trending/for-you/news/sports/entertainment tabs and client-side filtering by domain_context (e.g., United States, worldwide). Returns rank, name, domain context, and search URL. Requires a logged-in X.com session in the browser.",
+  "parameters": [
+    {
+      "name": "tab",
+      "description": "Explore tab to open",
+      "required": false,
+      "default": "trending"
+    },
+    {
+      "name": "region",
+      "description": "Filter by domain_context substring, e.g. 'United States' or 'worldwide'. Returns all trends if omitted.",
+      "required": false
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of trends to return",
+      "required": false,
+      "default": "30"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "required"
+}

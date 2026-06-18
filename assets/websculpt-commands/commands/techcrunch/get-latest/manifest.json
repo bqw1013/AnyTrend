@@ -1,0 +1,28 @@
+{
+  "id": "techcrunch-get-latest",
+  "domain": "techcrunch",
+  "action": "get-latest",
+  "runtime": "node",
+  "description": "Fetch the latest articles from TechCrunch via WordPress REST API. Supports optional filtering by category (23 categories including AI, startups, security, etc.) and pagination. Returns ranked articles with title, URL, date, excerpt, and featured image. No authentication required.",
+  "parameters": [
+    {
+      "name": "category",
+      "description": "Category slug to filter by. Available: artificial-intelligence, startups, venture, security, apps, climate, biotech-health, commerce, cryptocurrency, enterprise, fintech, fundraising, gadgets, gaming, government-policy, hardware, media-entertainment, privacy, real-estate, robotics, social, space, transportation. Omit for all categories.",
+      "required": false
+    },
+    {
+      "name": "per_page",
+      "description": "Number of articles per page (1-100, default: 20).",
+      "required": false,
+      "default": 20
+    },
+    {
+      "name": "page",
+      "description": "Page number for pagination (default: 1).",
+      "required": false,
+      "default": 1
+    }
+  ],
+  "requiresBrowser": false,
+  "authRequired": "not-required"
+}

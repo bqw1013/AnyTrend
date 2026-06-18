@@ -1,0 +1,23 @@
+{
+  "id": "baidu-get-hot",
+  "domain": "baidu",
+  "action": "get-hot",
+  "runtime": "node",
+  "description": "Fetch Baidu hot-search rankings. Supports realtime, homepage, novel, movie, and teleplay boards. Returns ranked items with title, heat index, description, tag, cover image, search link, and trend. No authentication required.",
+  "parameters": [
+    {
+      "name": "tab",
+      "description": "Board type. Allowed values: realtime (default, 50 items), homepage (15 items), novel (30 items), movie (10 items), teleplay (10 items).",
+      "required": false,
+      "default": "realtime"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of items to return.",
+      "required": false,
+      "default": "20"
+    }
+  ],
+  "requiresBrowser": false,
+  "authRequired": "not-required"
+}

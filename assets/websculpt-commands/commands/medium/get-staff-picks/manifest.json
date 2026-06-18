@@ -1,0 +1,17 @@
+{
+  "id": "medium-get-staff-picks",
+  "domain": "medium",
+  "action": "get-staff-picks",
+  "runtime": "browser",
+  "description": "Fetch Medium Staff Picks, the official editorial curation list. Returns staff-curated articles with metadata and curator notes. No API key required.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "Number of items to return (1-20). Values outside this range throw INVALID_PARAM.",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

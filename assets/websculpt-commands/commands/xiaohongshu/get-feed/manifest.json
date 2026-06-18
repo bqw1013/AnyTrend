@@ -1,0 +1,23 @@
+{
+  "id": "xiaohongshu-get-feed",
+  "domain": "xiaohongshu",
+  "action": "get-feed",
+  "runtime": "browser",
+  "description": "Get Xiaohongshu explore/discover feed notes from a specified content channel. Automatically scrolls proportionally to the requested limit to trigger lazy-load, then returns ranked notes with title, author info, engagement data (likes), cover images, and content type (image/video). Supports 11 channels including 推荐, 穿搭, 美食, 彩妆, 影视, 职场, 情感, 家居, 游戏, 旅行, 健身. Data is extracted from server-side rendered state — the command requires an active browser login. Includes human-like delays to reduce bot detection risk.",
+  "parameters": [
+    {
+      "name": "category",
+      "description": "Content channel name. Valid values: 推荐, 穿搭, 美食, 彩妆, 影视, 职场, 情感, 家居, 游戏, 旅行, 健身.",
+      "required": false,
+      "default": "推荐"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of notes to return.",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "required"
+}

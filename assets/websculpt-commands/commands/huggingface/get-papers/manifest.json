@@ -1,0 +1,23 @@
+{
+  "id": "huggingface-get-papers",
+  "domain": "huggingface",
+  "action": "get-papers",
+  "runtime": "browser",
+  "description": "Fetch trending AI research papers from Hugging Face Papers. Supports Daily/Weekly/Monthly period selection. Returns ranked papers with title, abstract, authors, publication date, upvotes, GitHub stars, and arXiv links. No authentication required.",
+  "parameters": [
+    {
+      "name": "period",
+      "description": "Time period for trending papers: daily, weekly, or monthly",
+      "required": false,
+      "default": "daily"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of papers to return",
+      "required": false,
+      "default": "20"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

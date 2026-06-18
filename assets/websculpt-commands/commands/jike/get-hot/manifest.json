@@ -1,0 +1,28 @@
+{
+  "id": "jike-get-hot",
+  "domain": "jike",
+  "action": "get-hot",
+  "runtime": "browser",
+  "description": "Fetch hot-ranked posts from a Jike topic/circle. Searches for topics by default, then returns posts from the topic's selected/hot tab sorted by engagement. Each result includes content, author info, interaction counts (likes/comments/reposts/shares), and topic metadata. Requires browser login state.",
+  "parameters": [
+    {
+      "name": "keyword",
+      "description": "Search keyword to find relevant topics (e.g., \"AI\", \"product\"). Ignored if topic_id is provided.",
+      "required": false,
+      "default": "AI"
+    },
+    {
+      "name": "topic_id",
+      "description": "Explicit topic/circle ID. When provided, skips keyword search and fetches hot posts directly from this topic.",
+      "required": false
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of hot posts to return.",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "required"
+}

@@ -163,6 +163,22 @@ anytrend merge \
   --output anytrend-data/daily/2026-06-17
 ```
 
+### 6. 使用项目内置的 WebSculpt 命令资产
+
+AnyTrend 已将所有数据采集命令以 WebSculpt 可导入的格式沉淀到本仓库的 `assets/websculpt-commands/` 目录。如果你本地还没有安装这些命令，可以直接从本仓库导入：
+
+```bash
+# 导入全部 27 条命令
+websculpt command import --from ./assets/websculpt-commands
+
+# 预览导入结果（不实际写入）
+websculpt command import --from ./assets/websculpt-commands --dry-run
+```
+
+导入后运行 `anytrend doctor` 即可验证环境是否就绪。
+
+> 注意：部分命令（抖音、知乎、小红书、即刻、脉脉、X 等）需要你在本地浏览器已登录的状态下运行。
+
 ---
 
 ## 📋 CLI 命令参考

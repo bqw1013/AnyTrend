@@ -1,0 +1,35 @@
+{
+  "id": "lobsters-get-hot",
+  "domain": "lobsters",
+  "action": "get-hot",
+  "runtime": "browser",
+  "description": "Fetch the hot story ranking from Lobsters (lobste.rs), a high-quality engineer community. Supports four sort modes: hot (votes + recency), new (latest submissions), active (recent comments), and top (highest votes in time window). Returns up to 25 ranked stories with title, URL, votes, domain, tags, author, comment count, and publish time. No authentication required.",
+  "parameters": [
+    {
+      "name": "sort",
+      "description": "Sort mode: hot (default, votes + recency), new (latest), active (recent comments), top (highest votes)",
+      "required": false,
+      "default": "hot"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of stories to return (max 25)",
+      "required": false,
+      "default": "25"
+    },
+    {
+      "name": "page",
+      "description": "Page number for pagination",
+      "required": false,
+      "default": "1"
+    },
+    {
+      "name": "top_period",
+      "description": "Time window for top sort: 1w (week), 1m (month), 1y (year)",
+      "required": false,
+      "default": "1w"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

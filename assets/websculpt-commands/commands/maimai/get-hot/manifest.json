@@ -1,0 +1,28 @@
+{
+  "id": "maimai-get-hot",
+  "domain": "maimai",
+  "action": "get-hot",
+  "runtime": "browser",
+  "description": "Fetch the top topics from the Maimai community hot-rank page, or search for hot posts by keyword when a query is provided. Requires a logged-in Maimai session in the browser.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "Number of results to return. Maximum 15 in hot-rank mode, maximum 50 in search mode.",
+      "required": false,
+      "default": "15"
+    },
+    {
+      "name": "query",
+      "description": "Search keyword. When provided, switches to hot-post search mode.",
+      "required": false
+    },
+    {
+      "name": "offset",
+      "description": "Pagination offset for search mode, only effective when query is provided.",
+      "required": false,
+      "default": "0"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "required"
+}

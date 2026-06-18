@@ -1,0 +1,28 @@
+{
+  "id": "toutiao-get-hot",
+  "domain": "toutiao",
+  "action": "get-hot",
+  "runtime": "browser",
+  "description": "Fetch trending content from a Toutiao channel. Supports 14 channels: 热点 (ranked hot list with hot values) and 推荐/财经/科技/军事/体育/娱乐/历史/美食/直播/旅游/国际/视频/北京 (article feeds). Supports cursor pagination. No authentication required.",
+  "parameters": [
+    {
+      "name": "channel",
+      "description": "Channel name. Allowed values: 热点, 推荐, 财经, 科技, 军事, 体育, 娱乐, 历史, 美食, 直播, 旅游, 国际, 视频, 北京",
+      "required": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of items to return",
+      "required": false,
+      "default": 20
+    },
+    {
+      "name": "cursor",
+      "description": "Pagination cursor from the previous response's nextCursor. 0 means the first page. Only supported by feed channels; ignored by 热点.",
+      "required": false,
+      "default": 0
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

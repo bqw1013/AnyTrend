@@ -1,0 +1,31 @@
+{
+  "commands": [
+    "bilibili/get-hot",
+    "github/get-trending",
+    "hackernews/get-top",
+    "reddit/get-hot",
+    "weibo/get-hot-search",
+    "zhihu/get-hot",
+    "juejin/get-hot",
+    "jike/get-hot",
+    "douyin/get-hot",
+    "baidu/get-hot",
+    "producthunt/get-trending",
+    "huggingface/get-trending",
+    "jiqizhixin/get-latest",
+    "toutiao/get-hot",
+    "google/get-trending",
+    "x/get-trending",
+    "youtube/get-feed",
+    "replicate/get-trending",
+    "lobsters/get-hot",
+    "qbitai/get-latest",
+    "huggingface/get-papers",
+    "maimai/get-hot",
+    "medium/get-staff-picks",
+    "medium/get-tag-trending",
+    "substack/get-trending",
+    "techcrunch/get-latest",
+    "xiaohongshu/get-feed"
+  ]
+}

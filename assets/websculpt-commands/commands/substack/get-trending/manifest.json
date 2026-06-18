@@ -1,0 +1,22 @@
+{
+  "id": "substack-get-trending",
+  "domain": "substack",
+  "action": "get-trending",
+  "runtime": "browser",
+  "description": "Fetch Substack trending content: global trending topics (AI-powered topic clusters covering tech, business, politics, etc.) or category leaderboards (top authors/publications ranked by paid/trending/free status across 32 categories). Returns ranked items with rich metadata including descriptions, categories, prediction market links, trending timestamps, and recent discussion users. No login required.",
+  "parameters": [
+    {
+      "name": "tab",
+      "description": "Content mode: 'explore' for global trending topics, or a category ID (e.g. '4'=Technology, '62'=Business, '118'=Crypto) for category leaderboard",
+      "required": false,
+      "default": "explore"
+    },
+    {
+      "name": "cursor",
+      "description": "Pagination cursor from previous response's nextCursor field",
+      "required": false
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

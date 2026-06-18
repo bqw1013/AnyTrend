@@ -1,0 +1,29 @@
+{
+  "id": "huggingface-get-trending",
+  "domain": "huggingface",
+  "action": "get-trending",
+  "runtime": "browser",
+  "description": "Fetch the daily trending leaderboard from Hugging Face Hub. Supports Models, Datasets, and Spaces with multiple sort options (trending, likes, downloads, created, modified, params). Returns ranked items with name, type, parameter size, update time, downloads, and likes. No authentication required.",
+  "parameters": [
+    {
+      "name": "type",
+      "description": "Content type to fetch trending for: models, datasets, or spaces",
+      "required": false,
+      "default": "models"
+    },
+    {
+      "name": "sort",
+      "description": "Sort order: trending, likes, downloads, created, modified, params_desc, params_asc",
+      "required": false,
+      "default": "trending"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of items to return",
+      "required": false,
+      "default": "20"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

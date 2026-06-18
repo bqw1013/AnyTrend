@@ -1,0 +1,23 @@
+{
+  "id": "qbitai-get-latest",
+  "domain": "qbitai",
+  "action": "get-latest",
+  "runtime": "browser",
+  "description": "Fetch the latest AI article list from the Qbitai homepage (qbitai.com). Articles are sorted in reverse chronological order, covering AI industry news, product launches, startups, and technology breakthroughs. Optionally returns the top featured carousel editor picks.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "返回文章数量，最大 20",
+      "required": false,
+      "default": "20"
+    },
+    {
+      "name": "includeFeatured",
+      "description": "是否额外返回顶部轮播/焦点图文章（编辑推荐，含封面图）",
+      "required": false,
+      "default": "false"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "juejin-get-hot",
+  "domain": "juejin",
+  "action": "get-hot",
+  "runtime": "node",
+  "description": "Fetch the Juejin (掘金) hot articles ranking list. Returns ranked articles with title, author, brief, heat index, view/digg/collect/comment counts, tags, and read time. No authentication required.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "Number of articles to return",
+      "required": false,
+      "default": 20
+    },
+    {
+      "name": "sort_type",
+      "description": "Sort type: 3 for hot rank, 200 for recommended",
+      "required": false,
+      "default": 3
+    }
+  ],
+  "requiresBrowser": false,
+  "authRequired": "not-required"
+}

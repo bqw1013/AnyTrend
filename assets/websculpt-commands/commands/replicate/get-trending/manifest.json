@@ -1,0 +1,23 @@
+{
+  "id": "replicate-get-trending",
+  "domain": "replicate",
+  "action": "get-trending",
+  "runtime": "browser",
+  "description": "Fetch trending AI models from Replicate's Explore page. Returns models from featured (curated trending) and latest (newest arrivals) sections. The official models section is available on request. Each model includes owner, name, description, run count, official badge, and cover image. No authentication required.",
+  "parameters": [
+    {
+      "name": "sections",
+      "description": "Comma-separated section names to include: featured, official, latest. Defaults to all three.",
+      "required": false,
+      "default": "featured,latest"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum models to return per section (1-50). Defaults to 12.",
+      "required": false,
+      "default": "12"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

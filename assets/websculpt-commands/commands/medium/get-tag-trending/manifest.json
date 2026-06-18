@@ -1,0 +1,22 @@
+{
+  "id": "medium-get-tag-trending",
+  "domain": "medium",
+  "action": "get-tag-trending",
+  "runtime": "browser",
+  "description": "Fetch trending articles for a Medium tag. Returns ranked articles with title, subtitle, author, clap count, response count, tags, reading time, publish date, preview image, and tag metadata. No API key required.",
+  "parameters": [
+    {
+      "name": "tag",
+      "description": "标签 slug（必填），如 artificial-intelligence、programming、technology、machine-learning",
+      "required": true
+    },
+    {
+      "name": "limit",
+      "description": "返回条数（最大 20）",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

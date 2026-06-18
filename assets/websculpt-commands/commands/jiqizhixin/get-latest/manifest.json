@@ -1,0 +1,17 @@
+{
+  "id": "jiqizhixin-get-latest",
+  "domain": "jiqizhixin",
+  "action": "get-latest",
+  "runtime": "browser",
+  "description": "Fetch the latest AI articles from Jiqizhixin (机器之心) in reverse chronological order. The site has no true hot ranking, so all sort parameters return the same time-ordered list. Returns title, author, publish time, category, tags, summary, cover image, etc. No authentication required.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "Number of articles to return, between 1 and 20. The API always returns about 20 items; the command truncates client-side.",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

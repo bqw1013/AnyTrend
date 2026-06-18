@@ -1,0 +1,41 @@
+{
+  "id": "douyin-get-hot",
+  "domain": "douyin",
+  "action": "get-hot",
+  "runtime": "browser",
+  "description": "Fetch trending billboard data from the Douyin Creator Center (Creative Insights). Supports 6 billboard types (hot videos, creation hotspots, hot topics, hot challenges, hot props, hot music), with optional content category, sort order, and time range filters for the video type. Requires an authenticated Douyin creator session in the browser. Returns ranked trending entries with title, author, play count, likes, comments, shares, hot score, and other metrics.",
+  "parameters": [
+    {
+      "name": "type",
+      "description": "Billboard type. Valid values: video (hot videos, default) — video rankings by plays/likes/comments/hot score, supports category and time filters; hotspot (creation hotspots) — recently popular creation themes; topic (hot topics) — platform-wide trending hashtags; challenge (hot challenges) — trending challenge activities; prop (hot props) — trending stickers/effects; music (hot music) — trending background music. Sort and time filters only apply when type is video.",
+      "required": false,
+      "default": "video"
+    },
+    {
+      "name": "tag",
+      "description": "Content category label (platform-native Chinese name), only valid when type=video. Common labels include: 全部 (default), 美食, 旅行, 泛生活, 汽车, 科技, 游戏, 二次元, 娱乐, 明星, 体育, 文化教育, 政务, 时尚, 才艺, 财经, 动植物, 剧情, 亲子, 三农, 创意. Other labels supported by the creator center may also be used.",
+      "required": false,
+      "default": "全部"
+    },
+    {
+      "name": "order",
+      "description": "Sort order, only valid when type=video. Valid values: play (most plays, default), like (most likes), comment (most comments), hot (highest hot score).",
+      "required": false,
+      "default": "play"
+    },
+    {
+      "name": "period",
+      "description": "Time range, only valid when type=video. Valid values: 24h (last 24 hours, default), 7d (last 7 days), 30d (last 30 days).",
+      "required": false,
+      "default": "24h"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of entries to return, between 1 and 50. Default is 20. The underlying API may return more data; this parameter trims the final output.",
+      "required": false,
+      "default": 20
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "required"
+}

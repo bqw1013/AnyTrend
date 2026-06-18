@@ -1,0 +1,22 @@
+{
+  "id": "google-get-trending",
+  "domain": "google",
+  "action": "get-trending",
+  "runtime": "browser",
+  "description": "Fetch Google Trends daily trending searches. Returns ranked trending keywords with search volume, percentage change, time started, active status, and related topics. Supports filtering by country/region via 2-letter ISO geo code (e.g. US, JP, HK). No authentication required.",
+  "parameters": [
+    {
+      "name": "geo",
+      "description": "2-letter ISO country code for the trending region (e.g. US, JP, HK, GB, KR). CN is not supported and will be rejected. Defaults to US.",
+      "required": false,
+      "default": "US"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of trending items to return. Defaults to returning all available items.",
+      "required": false
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}

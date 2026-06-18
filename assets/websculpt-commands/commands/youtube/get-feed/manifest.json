@@ -1,0 +1,23 @@
+{
+  "id": "youtube-get-feed",
+  "domain": "youtube",
+  "action": "get-feed",
+  "runtime": "browser",
+  "description": "Fetch YouTube homepage video feed as a trending substitute. Since the dedicated Trending page (/feed/trending) is unavailable in some regions, this command extracts ranked video recommendations from the homepage. Returns video title, channel, view count, publish time, duration, and link. Supports tab filtering (全部/音乐/直播/播客/游戏/最近上传/发现新视频). No authentication required.",
+  "parameters": [
+    {
+      "name": "limit",
+      "description": "Number of videos to return (max 50)",
+      "required": false,
+      "default": 20
+    },
+    {
+      "name": "tab",
+      "description": "Homepage tab to fetch: 全部 (default), 音乐, 直播, 播客, 游戏, 最近上传, 发现新视频",
+      "required": false,
+      "default": "全部"
+    }
+  ],
+  "requiresBrowser": true,
+  "authRequired": "not-required"
+}
