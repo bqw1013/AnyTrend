@@ -30,6 +30,9 @@ anytrend doctor
 
 # 5. 安装 AnyTrend Agent Skill，让 AI 自动调用 anytrend 命令
 npx skills add bqw1013/AnyTrend --skill anytrend-daily-site
+
+# 跳过 agent 选择交互，直接安装到检测到的 agent
+npx skills add bqw1013/AnyTrend --skill anytrend-daily-site --yes
 ```
 
 ## 生成日报
