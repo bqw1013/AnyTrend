@@ -46,10 +46,10 @@ annotated.jsonl┘                 ├──► homepage.json
 
 ```json
 {
-  "id": "baidu:realtime:1:河南高考600分及以上37544人",
+  "id": "baidu:realtime:1:某省高考分数线公布",
   "rank": 1,
-  "title": "河南高考600分及以上37544人",
-  "summary": "6月25日公布的2026年河南省高考……",
+  "title": "某省高考分数线公布",
+  "summary": "某省教育考试院公布今年高考一分一段表……",
   "url": "https://www.baidu.com/s?wd=...",
   "heat": "780.9万",
   "heat_raw": 7808927,
@@ -108,8 +108,8 @@ annotated.jsonl┘                 ├──► homepage.json
         {
           "angle": "百度实时热搜",
           "item_ids": [
-            "baidu:realtime:1:河南高考600分及以上37544人",
-            "baidu:realtime:2:不是日本相机坏了 是中国航母太快了"
+            "baidu:realtime:1:某省高考分数线公布",
+            "baidu:realtime:2:某行业基础设施安全引发关注"
           ]
         }
       ]
@@ -138,9 +138,9 @@ annotated.jsonl┘                 ├──► homepage.json
   "summary": "",
   "candidates": [
     {
-      "item_id": "baidu:realtime:8:阿里巴巴对美国国防部提起诉讼",
-      "title": "阿里巴巴对美国国防部提起诉讼",
-      "summary": "23日，阿里巴巴已正式对美国国防部提起诉讼……",
+      "item_id": "baidu:realtime:8:某科技公司对海外监管机构提起诉讼",
+      "title": "某科技公司对海外监管机构提起诉讼",
+      "summary": "某科技公司已正式对海外监管机构提起诉讼……",
       "url": "https://www.baidu.com/s?wd=...",
       "heat": "713.6万",
       "platform": "baidu",
@@ -194,10 +194,10 @@ annotated.jsonl┘                 ├──► homepage.json
       "criteria": "聚焦人工智能领域的最新模型发布……",
       "candidates": [
         {
-          "item_id": "hackernews:top:1:Unlimited OCR...",
-          "title": "百度开源 Unlimited OCR，可一次性解析整本扫描书",
-          "summary": "百度在 Hugging Face 发布 Unlimited OCR……",
-          "url": "https://github.com/baidu/Unlimited-OCR",
+          "item_id": "hackernews:top:1:某开源OCR项目",
+          "title": "某 OCR 开源项目发布，可一次性解析整本扫描书",
+          "summary": "某科技公司在社区发布 OCR 开源项目……",
+          "url": "https://github.com/example/ocr-project",
           "heat": "445 points",
           "platform": "hackernews",
           "angle": "HackerNews Top by Points",
@@ -251,8 +251,8 @@ annotated.jsonl┘                 ├──► homepage.json
       "name": "AI",
       "order": 1,
       "item_ids": [
-        "jiqizhixin:latest:1:豆包大模型2.1发布",
-        "hackernews:top:1:Unlimited OCR..."
+        "jiqizhixin:latest:1:某大语言模型新版本发布",
+        "hackernews:top:1:某开源OCR项目"
       ]
     },
     {
@@ -260,7 +260,7 @@ annotated.jsonl┘                 ├──► homepage.json
       "name": "科技",
       "order": 2,
       "item_ids": [
-        "juejin:hot:1:Android 17正式发布"
+        "juejin:hot:1:某操作系统新版本正式发布"
       ]
     }
   ]

@@ -78,11 +78,11 @@ anytrend build --archive-date <DATE>
 
 ```json
 {
-  "id": "baidu:realtime:1:河南高考600分及以上37544人",
+  "id": "baidu:realtime:1:某省高考分数线公布",
   "category_id": "society",
   "category_reason": "高考分数发布属于固定社会教育议题",
-  "title": "河南高考600分及以上37544人",
-  "summary": "6月25日公布的2026年河南省高考"一分一段表"显示，全省600分及以上考生37544人……",
+  "title": "某省高考分数线公布",
+  "summary": "某省教育考试院公布今年高考一分一段表，全省高分段考生人数……",
   "homepage_score": 3,
   "homepage_reason": "高考放榜社会关注度高，但持续性和突破性有限",
   "feed_scores": {
