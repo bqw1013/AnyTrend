@@ -18,9 +18,9 @@
 | 阶段 | 状态 |
 |---|---|
 | 数据采集 / Normalize / Merge | ✅ `anytrend build` |
-| AI 标注 | ✅ `SKILL.md` 阶段 2（subagent 并行） |
+| AI 标注 | ✅ `skills/anytrend-daily-site/SKILL.md` 阶段 2（subagent 并行） |
 | 代码聚合 | ✅ `anytrend daily-site aggregate` |
-| AI 精选（首页 + Feed） | ✅ `SKILL.md` 阶段 4–5（主 agent） |
+| AI 精选（首页 + Feed） | ✅ `skills/anytrend-daily-site/SKILL.md` 阶段 4–5（主 agent） |
 | 静态站点渲染 | ✅ `anytrend daily-site render` |
 
 ## 3. 数据流
@@ -58,7 +58,7 @@ annotated.jsonl┘                 ├──► homepage.json  │
 | `config/site.yaml` | 分类体系、feed 定义、首页偏好 |
 | `docs/site-schema.md` | 中间数据文件详细格式规范 |
 | `docs/cli.md` | CLI 命令参考 |
-| `SKILL.md` | 端到端日报生成 Skill |
+| `skills/anytrend-daily-site/SKILL.md` | 端到端日报生成 Skill |
 | `src/config/collect-plan.ts` | 采集源定义与顺序 |
 | `src/lib/daily-site-aggregator.ts` | 聚合命令实现 |
 | `src/lib/daily-site-renderer.ts` | 渲染命令实现 |

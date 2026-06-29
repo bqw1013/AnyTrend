@@ -27,6 +27,9 @@ anytrend setup
 
 # 4. 检查环境
 anytrend doctor
+
+# 5. 安装 AnyTrend Agent Skill，让 AI 自动调用 anytrend 命令
+npx skills add bqw1013/AnyTrend --skill anytrend-daily-site
 ```
 
 ## 生成日报
@@ -35,7 +38,7 @@ anytrend doctor
 anytrend build
 ```
 
-采集完成后，由 AI 完成标注、精选和站点渲染。端到端流程见 [`SKILL.md`](SKILL.md)。
+采集完成后，由 AI 完成标注、精选和站点渲染。端到端流程见 [`skills/anytrend-daily-site/SKILL.md`](skills/anytrend-daily-site/SKILL.md)。
 
 ---
 
