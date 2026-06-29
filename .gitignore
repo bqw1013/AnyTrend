@@ -6,7 +6,6 @@ dist/
 
 # Project directories (temporary)
 openspec/
-docs/
 
 # Temporary directories
 tmp/
