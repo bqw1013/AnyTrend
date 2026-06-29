@@ -1,0 +1,47 @@
+<%
+const sections = sources.platforms.map((platform) => ({ id: platform.platform, label: platform.platform }));
+const altClasses = ['', 'alt', 'alt2', 'alt'];
+const ITEMS_PREVIEW_LIMIT = 10;
+%>
+
+<div class="page-header">
+  <h1>来源浏览</h1>
+  <p class="page-subtitle">按平台查看原始热度与排名 · <%= date %></p>
+</div>
+
+<% for (const [platformIndex, platform] of sources.platforms.entries()) { %>
+  <section id="<%= platform.platform %>"<% if (altClasses[platformIndex % altClasses.length]) { %> class="<%= altClasses[platformIndex % altClasses.length] %>"<% } %>>
+    <h2><%= platform.platform %></h2>
+    <div class="platform-grid">
+      <% for (const angle of platform.angles) { %>
+        <div class="platform-group">
+          <div class="platform-name"><%= angle.angle %></div>
+          <% const angleItems = angle.item_ids.map((id) => items.get(id)).filter((item) => item !== undefined); %>
+          <% const previewItems = angleItems.slice(0, ITEMS_PREVIEW_LIMIT); %>
+          <% const remainingItems = angleItems.slice(ITEMS_PREVIEW_LIMIT); %>
+          <% const extraId = `source-extra-${platform.platform}-${angle.angle}`.replace(/[^a-zA-Z0-9_-]/g, '-'); %>
+          <% for (const item of previewItems) { %>
+            <%- include('../partials/source-item', { item }) %>
+          <% } %>
+          <% if (remainingItems.length > 0) { %>
+            <div id="<%= extraId %>" class="collapsed source-extra-items">
+              <% for (const item of remainingItems) { %>
+                <%- include('../partials/source-item', { item }) %>
+              <% } %>
+            </div>
+            <button
+              class="expand-items"
+              aria-controls="<%= extraId %>"
+              aria-expanded="false"
+              data-expand-text="展开全部"
+              data-collapse-text="收起"
+              data-remaining-count="<%= remainingItems.length %>"
+            >
+              展开全部 (<%= remainingItems.length %>)
+            </button>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </section>
+<% } %>

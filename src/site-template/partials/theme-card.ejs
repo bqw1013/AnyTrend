@@ -1,0 +1,30 @@
+<div class="theme">
+  <div class="theme-title">
+    <% if (item.url) { %>
+      <a href="<%= item.url %>" target="_blank"><%= item.title %></a>
+    <% } else { %>
+      <%= item.title %>
+    <% } %>
+  </div>
+  <% if (item.summary) { %>
+    <div class="theme-desc"><%= item.summary %></div>
+  <% } %>
+  <% if (item.category_reason) { %>
+    <div class="category-reason"><%= item.category_reason %></div>
+  <% } %>
+  <div class="sources">
+    <span class="source source-meta">
+      <span class="meta-platform"><%= item.platform %></span>
+      <span class="meta-separator">·</span>
+      <span class="meta-angle"><%= item.angle %></span>
+    </span>
+    <% if (item.heat) { %>
+      <span class="source source-heat"><span class="heat heat-hot"><%= item.heat %></span></span>
+    <% } %>
+    <% if (item.url) { %>
+      <a class="source source-link" href="<%= item.url %>" target="_blank" aria-label="打开链接">↗</a>
+    <% } else { %>
+      <span class="source source-no-link" title="无直达链接">−</span>
+    <% } %>
+  </div>
+</div>

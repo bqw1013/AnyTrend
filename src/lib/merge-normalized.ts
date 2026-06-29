@@ -217,13 +217,27 @@ export async function runMerge(
 			})) ?? [],
 	};
 
-	const mergedPath = path.join(outDir, "daily-merged.json");
+	const jsonlPath = path.join(outDir, "merged.jsonl");
+	const metaPath = path.join(outDir, "meta.json");
 	const reportPath = path.join(outDir, "collection-report.json");
 
-	writeFileSync(mergedPath, `${JSON.stringify(merged, null, 2)}\n`, "utf-8");
+	// Write items as JSONL (one item per line) for streaming consumers.
+	const jsonlContent = items.length > 0 ? `${items.map((item) => JSON.stringify(item)).join("\n")}\n` : "";
+	writeFileSync(jsonlPath, jsonlContent, "utf-8");
+
+	// Write metadata separately so summary stats can be read without loading items.
+	const meta = {
+		version: merged.version,
+		date: merged.date,
+		generated_at: merged.generated_at,
+		meta: merged.meta,
+	};
+	writeFileSync(metaPath, `${JSON.stringify(meta, null, 2)}\n`, "utf-8");
+
 	writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf-8");
 
-	log.log(`Merged ${items.length} items into ${mergedPath}`);
+	log.log(`Merged ${items.length} items into ${jsonlPath}`);
+	log.log(`Meta written to ${metaPath}`);
 	log.log(`Report written to ${reportPath}`);
 
 	return { merged, report };

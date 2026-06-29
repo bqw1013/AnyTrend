@@ -1,0 +1,52 @@
+{
+  "feeds": [
+    {
+      "id": "ai",
+      "title": "AI 动态",
+      "criteria": "聚焦人工智能领域的最新动态。",
+      "candidates": [
+        {
+          "item_id": "test:1:normal",
+          "title": "Normal item",
+          "summary": "A normal item.",
+          "url": "https://example.com/1",
+          "heat": "100万",
+          "platform": "baidu",
+          "angle": "实时",
+          "category_id": "ai",
+          "score": 5,
+          "reason": "Core AI.",
+          "order": 1,
+          "rank": 1,
+          "heat_raw": 1000000,
+          "tags": ["hot"],
+          "category_reason": "AI reason"
+        }
+      ]
+    },
+    {
+      "id": "politics-economy",
+      "title": "政经观察",
+      "criteria": "聚焦宏观经济与政策变化。",
+      "candidates": [
+        {
+          "item_id": "test:5:business",
+          "title": "Business item",
+          "summary": "",
+          "url": "https://example.com/5",
+          "heat": null,
+          "platform": "toutiao",
+          "angle": "财经",
+          "category_id": "business",
+          "score": 5,
+          "reason": "Core PE.",
+          "order": 1,
+          "rank": 2,
+          "heat_raw": null,
+          "tags": [],
+          "category_reason": "Business reason"
+        }
+      ]
+    }
+  ]
+}

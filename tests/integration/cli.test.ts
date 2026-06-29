@@ -96,6 +96,22 @@ describe("CLI argument parsing", () => {
 		expect(stdout).toContain("Display");
 	});
 
+	it("shows command help for daily-site", () => {
+		const { stdout, status } = runCli(["daily-site", "--help"]);
+		expect(status).toBe(0);
+		expect(stdout).toContain("Usage:");
+		expect(stdout).toContain("aggregate");
+		expect(stdout).toContain("render");
+	});
+
+	it("shows command help for daily-site render", () => {
+		const { stdout, status } = runCli(["daily-site", "render", "--help"]);
+		expect(status).toBe(0);
+		expect(stdout).toContain("Usage:");
+		expect(stdout).toContain("--archive-date");
+		expect(stdout).toContain("--output");
+	});
+
 	it("rejects invalid option values with helpful error", () => {
 		const { status } = runCli(["collect", "--concurrency", "not-a-number"]);
 		// Commander should exit non-zero on invalid option

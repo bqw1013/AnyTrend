@@ -1,0 +1,43 @@
+<article class="rec-card">
+  <% if (typeof index !== 'undefined' && index !== null) { %>
+    <h3 data-index="<%= index %>">
+      <% if (candidate.url) { %>
+        <a href="<%= candidate.url %>" target="_blank"><%= candidate.title %></a>
+      <% } else { %>
+        <%= candidate.title %>
+      <% } %>
+    </h3>
+  <% } else { %>
+    <h4 class="theme-title">
+      <% if (candidate.url) { %>
+        <a href="<%= candidate.url %>" target="_blank"><%= candidate.title %></a>
+      <% } else { %>
+        <%= candidate.title %>
+      <% } %>
+    </h4>
+  <% } %>
+
+  <% if (candidate.summary) { %>
+    <p class="theme-desc"><%= candidate.summary %></p>
+  <% } %>
+
+  <% if (typeof showScoreReason !== 'undefined' && showScoreReason) { %>
+    <p class="feed-reason"><%= candidate.reason %></p>
+  <% } %>
+
+  <div class="sources">
+    <span class="source source-meta">
+      <span class="meta-platform"><%= candidate.platform %></span>
+      <span class="meta-separator">·</span>
+      <span class="meta-angle"><%= candidate.angle %></span>
+    </span>
+    <% if (candidate.heat) { %>
+      <span class="source source-heat"><span class="heat heat-hot"><%= candidate.heat %></span></span>
+    <% } %>
+    <% if (candidate.url) { %>
+      <a class="source source-link" href="<%= candidate.url %>" target="_blank" aria-label="打开链接">↗</a>
+    <% } else { %>
+      <span class="source source-no-link" title="无直达链接">−</span>
+    <% } %>
+  </div>
+</article>

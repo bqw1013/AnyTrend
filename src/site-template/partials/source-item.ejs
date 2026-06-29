@@ -1,0 +1,11 @@
+<div class="item">
+  <span class="rank"><%= item.rank !== null && item.rank !== undefined ? item.rank : '-' %></span>
+  <% if (item.url) { %>
+    <a href="<%= item.url %>" target="_blank"><%= item.title %></a>
+  <% } else { %>
+    <span class="title-text"><%= item.title %></span>
+  <% } %>
+  <% if (item.heat) { %>
+    <span class="heat heat-hot"><%= item.heat %></span>
+  <% } %>
+</div>

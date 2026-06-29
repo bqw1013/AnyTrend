@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "category_id": "ai",
+      "name": "AI",
+      "order": 1,
+      "item_ids": ["test:1:normal"]
+    },
+    {
+      "category_id": "tech",
+      "name": "科技",
+      "order": 2,
+      "item_ids": ["test:4:tech"]
+    },
+    {
+      "category_id": "business",
+      "name": "商业",
+      "order": 3,
+      "item_ids": ["test:5:business"]
+    },
+    {
+      "category_id": "society",
+      "name": "社会",
+      "order": 4,
+      "item_ids": ["test:2:escape"]
+    },
+    {
+      "category_id": "other",
+      "name": "其他",
+      "order": 5,
+      "item_ids": ["test:3:nourl"]
+    }
+  ]
+}

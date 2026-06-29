@@ -1,0 +1,17 @@
+<aside class="sidebar">
+  <h3 class="sidebar-title"><%= typeof sidebarTitle !== 'undefined' ? sidebarTitle : '导航' %></h3>
+  <button
+    class="sidebar-toggle"
+    aria-expanded="false"
+    aria-controls="sidebar-list"
+    data-expand-label="<%= typeof expandLabel !== 'undefined' ? expandLabel : '展开' %>"
+    data-collapse-label="<%= typeof collapseLabel !== 'undefined' ? collapseLabel : '收起' %>"
+  >
+    <%= typeof expandLabel !== 'undefined' ? expandLabel : '展开' %>
+  </button>
+  <ul class="sidebar-list" id="sidebar-list">
+    <% for (const section of sections) { %>
+      <li><a href="#<%= section.id %>"><%= section.label %></a></li>
+    <% } %>
+  </ul>
+</aside>

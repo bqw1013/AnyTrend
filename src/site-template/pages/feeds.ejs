@@ -1,0 +1,26 @@
+<%
+const sections = feeds.feeds.map((feed) => ({ id: feed.id, label: feed.title }));
+const feedIcons = ['◇', '◎', '◉', '▣', '◆'];
+%>
+
+<div class="page-header">
+  <h1>AI 精选</h1>
+  <p class="page-subtitle">由 AI 基于编辑描述生成的专题视角 · <%= date %></p>
+</div>
+
+<p class="feed-explainer">
+  这里的每个视角都对应一段编辑描述，AI 据此从今日热点中筛选、排序并整理出最值得关注的内容。
+</p>
+
+<% for (const [feedIndex, feed] of feeds.feeds.entries()) { %>
+  <section id="<%= feed.id %>" class="feed-section">
+    <div class="feed-header">
+      <span class="feed-icon"><%= feedIcons[feedIndex % feedIcons.length] %></span>
+      <h2 class="feed-title"><%= feed.title %></h2>
+    </div>
+
+    <% for (const [candidateIndex, candidate] of feed.candidates.entries()) { %>
+      <%- include('../partials/rec-card', { candidate, index: candidateIndex + 1, showScoreReason: true }) %>
+    <% } %>
+  </section>
+<% } %>

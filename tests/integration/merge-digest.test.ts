@@ -112,7 +112,7 @@ describe("runMerge digest output", () => {
 		expect(files).toEqual(["baidu-get-hot-realtime.md"]);
 	});
 
-	it("still writes daily-merged.json and collection-report.json", async () => {
+	it("writes merged.jsonl, meta.json and collection-report.json", async () => {
 		writeFileSync(
 			path.join(normalizedDir, "baidu-get-hot-realtime.json"),
 			JSON.stringify(makeOutput({ command: "baidu/get-hot" })),
@@ -120,7 +120,30 @@ describe("runMerge digest output", () => {
 
 		await runMerge(normalizedDir, outputDir, "2026-06-17");
 
-		expect(readdirSync(outputDir).sort()).toContain("daily-merged.json");
-		expect(readdirSync(outputDir).sort()).toContain("collection-report.json");
+		const files = readdirSync(outputDir).sort();
+		expect(files).toContain("merged.jsonl");
+		expect(files).toContain("meta.json");
+		expect(files).toContain("collection-report.json");
+		expect(files).not.toContain("daily-merged.json");
+
+		const meta = JSON.parse(readFileSync(path.join(outputDir, "meta.json"), "utf-8")) as {
+			version: string;
+			date: string;
+			generated_at: string;
+			meta: { total_items: number };
+			items?: unknown;
+		};
+		expect(meta.version).toBe("1.0");
+		expect(meta.date).toBe("2026-06-17");
+		expect(meta.generated_at).toBeDefined();
+		expect(meta.meta.total_items).toBe(1);
+		expect(meta.items).toBeUndefined();
+
+		const jsonlLines = readFileSync(path.join(outputDir, "merged.jsonl"), "utf-8")
+			.trim()
+			.split("\n")
+			.filter((line) => line.length > 0);
+		expect(jsonlLines).toHaveLength(1);
+		expect(JSON.parse(jsonlLines[0] ?? "{}")).toMatchObject({ title: "Trending topic" });
 	});
 });

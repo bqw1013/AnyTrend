@@ -1,0 +1,17 @@
+<div class="page-header">
+  <h1>今日热点日报</h1>
+  <p class="page-subtitle"><%= date %></p>
+</div>
+
+<section>
+  <h2>今日速览</h2>
+  <% if (homepage.summary) { %>
+    <p class="summary-text"><%= homepage.summary %></p>
+  <% } %>
+
+  <h3 class="section-subtitle" data-index="★">重点推荐</h3>
+
+  <% for (const candidate of homepage.candidates) { %>
+    <%- include('../partials/rec-card', { candidate }) %>
+  <% } %>
+</section>

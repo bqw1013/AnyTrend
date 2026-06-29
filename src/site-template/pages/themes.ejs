@@ -1,0 +1,45 @@
+<%
+const sections = themes.categories.map((category) => ({ id: category.category_id, label: category.name }));
+const altClasses = ['', 'alt', 'alt2', 'alt'];
+const ITEMS_PREVIEW_LIMIT = 6;
+%>
+
+<div class="page-header">
+  <h1>今日主题</h1>
+  <p class="page-subtitle">按分类浏览跨平台聚合热点 · <%= date %></p>
+</div>
+
+<% for (const [index, category] of themes.categories.entries()) { %>
+  <section id="<%= category.category_id %>"<% if (altClasses[index % altClasses.length]) { %> class="<%= altClasses[index % altClasses.length] %>"<% } %>>
+    <h2><%= category.name %></h2>
+    <div class="theme-grid">
+      <% const categoryItems = category.item_ids.map((id) => items.get(id)).filter((item) => item !== undefined); %>
+      <% if (categoryItems.length === 0) { %>
+        <p class="empty-state">该分类今日暂无内容。</p>
+      <% } else { %>
+        <% const previewItems = categoryItems.slice(0, ITEMS_PREVIEW_LIMIT); %>
+        <% const remainingItems = categoryItems.slice(ITEMS_PREVIEW_LIMIT); %>
+        <% for (const item of previewItems) { %>
+          <%- include('../partials/theme-card', { item }) %>
+        <% } %>
+        <% if (remainingItems.length > 0) { %>
+          <div id="theme-extra-<%= category.category_id %>" class="collapsed theme-extra-items">
+            <% for (const item of remainingItems) { %>
+              <%- include('../partials/theme-card', { item }) %>
+            <% } %>
+          </div>
+          <button
+            class="expand-items"
+            aria-controls="theme-extra-<%= category.category_id %>"
+            aria-expanded="false"
+            data-expand-text="展开全部"
+            data-collapse-text="收起"
+            data-remaining-count="<%= remainingItems.length %>"
+          >
+            展开全部 (<%= remainingItems.length %>)
+          </button>
+        <% } %>
+      <% } %>
+    </div>
+  </section>
+<% } %>

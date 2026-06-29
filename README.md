@@ -150,7 +150,8 @@ anytrend build --quiet
 
 - `anytrend-data/raw/YYYY-MM-DD/` — websculpt 原始 JSON
 - `anytrend-data/normalized/YYYY-MM-DD/` — 符合 schema-v1 的标准 JSON
-- `anytrend-data/daily/YYYY-MM-DD/daily-merged.json` — 合并后的单一文件（含 `_source` 来源元数据）
+- `anytrend-data/daily/YYYY-MM-DD/merged.jsonl` — 合并后的项目流（每行一个 item，含 `_source` 来源元数据）
+- `anytrend-data/daily/YYYY-MM-DD/meta.json` — 合并元数据（版本、日期、生成时间、统计信息）
 - `anytrend-data/daily/YYYY-MM-DD/collection-report.json` — 调用统计与失败详情
 
 ### 7. 查看采集计划
@@ -286,7 +287,8 @@ anytrend-data/
 ├── raw/2026-06-17/              # WebSculpt 原始 JSON
 ├── normalized/2026-06-17/       # 符合 schema-v1 的标准 JSON
 └── daily/2026-06-17/
-    ├── daily-merged.json        # 合并后的单一文件
+    ├── merged.jsonl             # 合并后的项目流（每行一个 item）
+    ├── meta.json                # 合并元数据（版本、日期、统计）
     └── collection-report.json   # 调用统计与失败详情
 ```
 
@@ -437,7 +439,7 @@ anytrend-data/normalized/2026-06-17/
 
 ### `anytrend merge` — 合并 Normalized 输出
 
-将 normalized 目录下的所有文件合并为 `daily-merged.json` 和 `collection-report.json`。`--input` 和 `--output` 均为目录路径。
+将 normalized 目录下的所有文件合并为 `merged.jsonl`、`meta.json` 和 `collection-report.json`。`--input` 和 `--output` 均为目录路径。
 
 ```bash
 anytrend merge --input <dir> --output <dir> [--quiet] [--no-color]
@@ -455,34 +457,28 @@ anytrend merge \
 
 ```
 anytrend-data/daily/2026-06-17/
-├── daily-merged.json        # 所有 normalized 文件聚合后的数据
+├── merged.jsonl             # 所有 normalized 文件聚合后的 item 流
+├── meta.json                # 合并元数据（版本、日期、生成时间、统计）
 └── collection-report.json   # 统计：成功/失败条数、平台覆盖、错误明细
 ```
 
-`daily-merged.json` 的简化结构示例：
+`meta.json` 的简化结构示例：
 
 ```json
 {
+  "version": "1.0",
   "date": "2026-06-17",
   "generated_at": "2026-06-17T09:00:00Z",
-  "sources": [
-    {
-      "command": "baidu/get-hot",
-      "platform": "baidu",
-      "category": "zh-general",
-      "board_type": "hot-search",
-      "items": [...]
-    },
-    {
-      "command": "github/get-trending",
-      "platform": "github",
-      "category": "en-ai",
-      "board_type": "trending",
-      "items": [...]
-    }
-  ]
+  "meta": {
+    "total_calls": 55,
+    "successful_calls": 52,
+    "failed_calls": 3,
+    "total_items": 1204
+  }
 }
 ```
+
+`merged.jsonl` 每行是一个完整的 normalized item（含 `_source` 来源元数据），便于流式读取和按行处理。
 
 ---
 
@@ -619,7 +615,7 @@ RUN_E2E_LIVE=1 npm run test:e2e
 ### 推荐调度方式
 
 - **本地开发/个人使用**：`cron` 或 `systemd timer` 每天固定时间执行 `npm run collect:daily`。
-- **团队协作**：GitHub Actions 每日定时运行，将 `anytrend-data/daily/YYYY-MM-DD/daily-merged.json` 喂给 LLM 生成 Markdown 日报。
+- **团队协作**：GitHub Actions 每日定时运行，将 `anytrend-data/daily/YYYY-MM-DD/merged.jsonl` 与 `meta.json` 喂给 LLM 生成 Markdown 日报。
 - **高频监控**：可配置多时段采集，对比榜单变化生成趋势图。
 
 > LLM 提示词模板和 Markdown 日报渲染器将在后续版本中补充。欢迎提交 Issue 或 PR 一起设计。

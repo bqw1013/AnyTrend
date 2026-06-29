@@ -1,0 +1,22 @@
+{
+  "summary": "Test summary for the homepage.",
+  "candidates": [
+    {
+      "item_id": "test:1:normal",
+      "title": "Normal item",
+      "summary": "A normal item.",
+      "url": "https://example.com/1",
+      "heat": "100万",
+      "platform": "baidu",
+      "angle": "实时",
+      "category_id": "ai",
+      "score": 5,
+      "reason": "Important AI news.",
+      "order": 1,
+      "rank": 1,
+      "heat_raw": 1000000,
+      "tags": ["hot"],
+      "category_reason": "AI reason"
+    }
+  ]
+}

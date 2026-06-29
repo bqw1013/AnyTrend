@@ -1,0 +1,49 @@
+{
+  "platforms": [
+    {
+      "platform": "baidu",
+      "angles": [
+        {
+          "angle": "实时",
+          "item_ids": ["test:1:normal"]
+        }
+      ]
+    },
+    {
+      "platform": "weibo",
+      "angles": [
+        {
+          "angle": "热搜",
+          "item_ids": ["test:2:escape"]
+        }
+      ]
+    },
+    {
+      "platform": "douyin",
+      "angles": [
+        {
+          "angle": "热点",
+          "item_ids": ["test:3:nourl"]
+        }
+      ]
+    },
+    {
+      "platform": "github",
+      "angles": [
+        {
+          "angle": "trending",
+          "item_ids": ["test:4:tech"]
+        }
+      ]
+    },
+    {
+      "platform": "toutiao",
+      "angles": [
+        {
+          "angle": "财经",
+          "item_ids": ["test:5:business"]
+        }
+      ]
+    }
+  ]
+}

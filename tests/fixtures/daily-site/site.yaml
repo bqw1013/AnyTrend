@@ -1,0 +1,40 @@
+version: "1.0"
+
+homepage:
+  recommendation_count: 2
+  criteria: "首页推荐标准"
+
+categories:
+  - id: ai
+    name: AI
+    order: 1
+    definition: 人工智能模型、论文、产品、开源项目、行业争议及 AI 基础设施。
+
+  - id: tech
+    name: 科技
+    order: 2
+    definition: 广义科技、软硬件、开发者工具、芯片、网络安全、量子计算等，且核心不是 AI。
+
+  - id: business
+    name: 商业
+    order: 3
+    definition: 企业财报、并购、市场波动、商业模式、消费品牌争议。
+
+  - id: society
+    name: 社会
+    order: 4
+    definition: 社会民生、公共安全、教育情绪、社会热点、灾害事故。
+
+  - id: other
+    name: 其他
+    order: 5
+    definition: 明显不属于以上任何一类，或无法判断主题的内容。
+
+feeds:
+  - id: ai
+    title: AI 动态
+    criteria: "聚焦人工智能领域的最新模型发布、开源项目、产品更新、研究论文与行业争议。"
+
+  - id: politics-economy
+    title: 政经观察
+    criteria: "聚焦宏观经济、政策变化、国际关系与重大社会议题。"

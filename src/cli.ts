@@ -12,6 +12,8 @@ import { fileURLToPath } from "node:url";
 import { Command } from "commander";
 import type { RunCollectDailyOptions } from "./lib/collect-daily.js";
 import { runCollectDaily } from "./lib/collect-daily.js";
+import { runDailySiteAggregate } from "./lib/daily-site-aggregator.js";
+import { loadDailySiteData, renderSite } from "./lib/daily-site-renderer.js";
 import { formatDoctorReport, runDoctor } from "./lib/doctor.js";
 import type { Logger } from "./lib/logger.js";
 import { createLogger } from "./lib/logger.js";
@@ -258,6 +260,53 @@ sourcesCmd
 
 		const table = formatSourcesTable({ useColor });
 		console.log(table);
+	});
+
+// ── daily-site ───────────────────────────────────────────────────────
+
+const dailySiteCmd = program.command("daily-site").description("Daily Site intermediate file generation");
+
+dailySiteCmd
+	.command("aggregate")
+	.description("Aggregate merged.jsonl and annotated.jsonl into Daily Site files")
+	.option("--archive-date <date>", "Archive folder date (YYYY-MM-DD, default: today)", formatDate(new Date()))
+	.option("--skip-validation", "Skip annotated.jsonl validation", false)
+	.action(async (options) => {
+		const globals = program.optsWithGlobals() as GlobalOptions;
+		const logger = createCliLogger(globals);
+
+		await runDailySiteAggregate({
+			date: options.archiveDate,
+			skipValidation: options.skipValidation,
+			logger,
+		});
+	});
+
+dailySiteCmd
+	.command("render")
+	.description("Render Daily Site intermediate files into static HTML")
+	.option("--archive-date <date>", "Archive folder date (YYYY-MM-DD, default: today)", formatDate(new Date()))
+	.option("--output <dir>", "Output directory root (default: anytrend-data/site)", "anytrend-data/site")
+	.action(async (options) => {
+		const globals = program.optsWithGlobals() as GlobalOptions;
+		const logger = createCliLogger(globals);
+		const date = options.archiveDate;
+		const outputRoot = options.output;
+
+		const dateDir = path.resolve("anytrend-data", "daily", date);
+		const outputDir = path.resolve(outputRoot, date);
+		const siteConfigPath = path.resolve("config", "site.yaml");
+
+		try {
+			const input = await loadDailySiteData(dateDir, siteConfigPath);
+			await renderSite(input, outputDir, { quiet: globals.quiet, logger });
+			if (!globals.quiet) {
+				logger.info(`Daily site render complete for ${date}: ${outputDir}`);
+			}
+		} catch (err) {
+			logger.error(`Daily site render failed for ${date}: ${err instanceof Error ? err.message : String(err)}`);
+			process.exit(1);
+		}
 	});
 
 // ── Parse ────────────────────────────────────────────────────────────
