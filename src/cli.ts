@@ -235,13 +235,14 @@ program
 
 program
 	.command("setup")
-	.description("Import bundled WebSculpt commands into your local command library")
+	.description("Import bundled WebSculpt commands and default config into your project")
 	.option("--dry-run", "Print the import command without executing it", false)
+	.option("--force", "Overwrite existing config files", false)
 	.action(async (options) => {
 		const globals = program.optsWithGlobals() as GlobalOptions;
 		const logger = createCliLogger(globals);
 
-		const result = await runSetup({ dryRun: options.dryRun, logger });
+		const result = await runSetup({ dryRun: options.dryRun, force: options.force, logger });
 		if (!result.success) {
 			process.exit(1);
 		}

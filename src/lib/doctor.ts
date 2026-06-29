@@ -8,7 +8,7 @@
  */
 
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COLLECT_PLAN, type CollectCall } from "../config/collect-plan.js";
@@ -241,6 +241,25 @@ async function checkRequiredCommands(): Promise<DoctorCheckResult> {
 }
 
 /**
+ * Check that config/site.yaml exists in the CWD.
+ */
+function checkSiteConfig(): DoctorCheckResult {
+	const configPath = path.resolve("config", "site.yaml");
+	if (existsSync(configPath)) {
+		return {
+			label: "Site config",
+			passed: true,
+			message: configPath,
+		};
+	}
+	return {
+		label: "Site config",
+		passed: false,
+		message: `${configPath} not found — run "anytrend setup" to create it`,
+	};
+}
+
+/**
  * Run all doctor checks and return a report.
  */
 export async function runDoctor(logger?: Logger): Promise<DoctorReport> {
@@ -269,6 +288,10 @@ export async function runDoctor(logger?: Logger): Promise<DoctorReport> {
 			message: "Skipped — websculpt CLI not available",
 		});
 	}
+
+	// 4. Site config
+	const configCheck = checkSiteConfig();
+	checks.push(configCheck);
 
 	const allPassed = checks.every((c) => c.passed);
 

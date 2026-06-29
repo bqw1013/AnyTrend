@@ -6,7 +6,7 @@
 
 import type { ChildProcess, SpawnOptions } from "node:child_process";
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Logger } from "./logger.js";
@@ -18,6 +18,8 @@ const __dirname = path.dirname(__filename);
 export interface RunSetupOptions {
 	/** When true, print the import command instead of executing it. */
 	dryRun?: boolean;
+	/** When true, overwrite existing config files. */
+	force?: boolean;
 	/** Optional logger; defaults to console output. */
 	logger?: Logger;
 }
@@ -48,6 +50,39 @@ const defaultDeps: RunSetupDependencies = {
  */
 export function getBundledAssetsDir(): string {
 	return path.join(__dirname, "..", "..", "assets", "websculpt-commands");
+}
+
+/**
+ * Returns the absolute path to the bundled site.yaml config file.
+ */
+export function getBundledSiteConfigPath(): string {
+	return path.join(__dirname, "..", "..", "config", "site.yaml");
+}
+
+/**
+ * Copies the bundled site.yaml to the user's project root (CWD `config/site.yaml`).
+ * Skips if the target already exists, unless `force` is true.
+ *
+ * Returns the target path on success, or null if the bundled source is missing.
+ */
+function copySiteConfig(logger: Logger, force: boolean): string | null {
+	const source = getBundledSiteConfigPath();
+	const target = path.resolve("config", "site.yaml");
+
+	if (!existsSync(source)) {
+		logger.warn(`Bundled site.yaml not found at ${source}, skipping config copy.`);
+		return null;
+	}
+
+	if (existsSync(target) && !force) {
+		logger.log(`Config already exists at ${target}, skipping. Use --force to overwrite.`);
+		return target;
+	}
+
+	mkdirSync(path.dirname(target), { recursive: true });
+	copyFileSync(source, target);
+	logger.log(`Config copied to ${target}`);
+	return target;
 }
 
 function checkWebsculpt(deps: RunSetupDependencies): Promise<{ ok: boolean; error: string | null }> {
@@ -131,6 +166,10 @@ export async function runSetup(
 			logger.error(error);
 			return { success: false, assetsDir, error };
 		}
+
+		// Copy default site.yaml to user's project root
+		copySiteConfig(logger, options.force ?? false);
+
 		return { success: true, assetsDir };
 	} catch (err) {
 		const error = err instanceof Error ? err.message : String(err);

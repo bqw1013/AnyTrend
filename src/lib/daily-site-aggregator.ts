@@ -6,6 +6,7 @@
  * `sources.json`, `homepage.json`, `feeds.json`, and `themes.json`.
  */
 
+import { existsSync } from "node:fs";
 import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,7 +26,9 @@ import {
 import { defaultLogger, type Logger } from "./logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const defaultSiteConfigPath = path.resolve(__dirname, "..", "..", "config", "site.yaml");
+const bundledSiteConfigPath = path.resolve(__dirname, "..", "..", "config", "site.yaml");
+const cwdSiteConfigPath = path.resolve("config", "site.yaml");
+const defaultSiteConfigPath = existsSync(cwdSiteConfigPath) ? cwdSiteConfigPath : bundledSiteConfigPath;
 const defaultDataDir = path.resolve("anytrend-data", "daily");
 
 /** Options for `runDailySiteAggregate`. */
@@ -40,7 +43,7 @@ export interface RunDailySiteAggregateOptions {
 	logger?: Logger;
 	/** Optional collect plan for tests; defaults to `src/config/collect-plan`. */
 	collectPlan?: CollectCall[];
-	/** Optional site config path for tests; defaults to project-root `config/site.yaml`. */
+	/** Optional site config path for tests; defaults to CWD `config/site.yaml`, falling back to bundled config. */
 	siteConfigPath?: string;
 }
 
