@@ -6,6 +6,7 @@
  */
 
 import { z } from "zod";
+import type { Logger } from "../lib/logger.js";
 import type {
 	AggregatedItem,
 	FeedsOutput,
@@ -59,5 +60,5 @@ export interface DailySiteRenderOptions {
 	/** Suppress per-file progress output. */
 	quiet?: boolean;
 	/** Optional logger for progress and errors. */
-	logger?: import("../lib/logger.js").Logger;
+	logger?: Logger;
 }
