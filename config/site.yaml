@@ -1,7 +1,5 @@
-version: "1.0"
-
 translation:
-  target_language: zh
+  target_language: 中文
 
 homepage:
   recommendation_count: 15
@@ -94,3 +92,13 @@ feeds:
       3 分是普通相关——社会议题带有政策/经济背景，但影响有限或非今日焦点；
       2 分是弱相关——娱乐/体育/科技新闻中附带一点政经元素；
       1 分是不相关——与政经无关。
+
+pipeline:
+  annotation:
+    batch_size: 50
+    max_concurrency: 10
+    model: haiku
+  aggregation:
+    candidate_ratio: 0.2
+    max_candidates: 50
+    initial_score_threshold: 4
