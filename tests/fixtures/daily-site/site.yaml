@@ -1,4 +1,5 @@
-version: "1.0"
+translation:
+  target_language: 中文
 
 homepage:
   recommendation_count: 2
@@ -33,8 +34,20 @@ categories:
 feeds:
   - id: ai
     title: AI 动态
+    recommendation_count: 2
     criteria: "聚焦人工智能领域的最新模型发布、开源项目、产品更新、研究论文与行业争议。"
 
   - id: politics-economy
     title: 政经观察
+    recommendation_count: 2
     criteria: "聚焦宏观经济、政策变化、国际关系与重大社会议题。"
+
+pipeline:
+  annotation:
+    batch_size: 50
+    max_concurrency: 10
+    model: haiku
+  aggregation:
+    candidate_ratio: 0.2
+    max_candidates: 50
+    initial_score_threshold: 4

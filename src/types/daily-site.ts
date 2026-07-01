@@ -57,17 +57,45 @@ export const siteCategorySchema = z.object({
 export const siteFeedSchema = z.object({
 	id: z.string(),
 	title: z.string(),
+	recommendation_count: z.number().int().min(1),
 	criteria: z.string(),
+});
+
+/** Translation settings from `config/site.yaml`. */
+export const translationSchema = z.object({
+	target_language: z.string(),
+});
+
+/** Annotation pipeline tunables from `config/site.yaml`. */
+export const pipelineAnnotationSchema = z.object({
+	batch_size: z.number().int().min(1),
+	max_concurrency: z.number().int().min(1),
+	model: z.string(),
+});
+
+/** Aggregation pipeline tunables from `config/site.yaml`. */
+export const pipelineAggregationSchema = z.object({
+	candidate_ratio: z.number().min(0).max(1),
+	max_candidates: z.number().int().min(1),
+	initial_score_threshold: z.number().int().min(1).max(5),
+});
+
+/** Pipeline configuration from `config/site.yaml`. */
+export const pipelineSchema = z.object({
+	annotation: pipelineAnnotationSchema,
+	aggregation: pipelineAggregationSchema,
 });
 
 /** Parsed `config/site.yaml`. */
 export const siteConfigSchema = z.object({
+	translation: translationSchema,
 	homepage: z.object({
 		recommendation_count: z.number().int(),
 		criteria: z.string(),
 	}),
 	categories: siteCategorySchema.array(),
 	feeds: siteFeedSchema.array(),
+	pipeline: pipelineSchema,
 });
 
 /** A joined item written to `items.jsonl`. */
@@ -167,6 +195,12 @@ export type SiteCategory = z.infer<typeof siteCategorySchema>;
 
 /** A feed definition from `config/site.yaml`. */
 export type SiteFeed = z.infer<typeof siteFeedSchema>;
+
+/** Translation settings from `config/site.yaml`. */
+export type TranslationConfig = z.infer<typeof translationSchema>;
+
+/** Pipeline configuration from `config/site.yaml`. */
+export type PipelineConfig = z.infer<typeof pipelineSchema>;
 
 /** Parsed `config/site.yaml`. */
 export type SiteConfig = z.infer<typeof siteConfigSchema>;

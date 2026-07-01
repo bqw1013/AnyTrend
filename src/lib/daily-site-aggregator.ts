@@ -188,6 +188,7 @@ export function validateAnnotatedItem(
  */
 export function validateAnnotatedFile(rawLines: LineItem<unknown>[], siteConfig: SiteConfig): ValidationError[] {
 	const errors: ValidationError[] = [];
+	const seenIds = new Map<string, number>();
 
 	for (const { lineNumber, value: raw } of rawLines) {
 		const schemaResult = annotatedItemSchema.safeParse(raw);
@@ -195,7 +196,19 @@ export function validateAnnotatedFile(rawLines: LineItem<unknown>[], siteConfig:
 			errors.push({ lineNumber, message: formatZodError(schemaResult.error) });
 			continue;
 		}
-		errors.push(...validateAnnotatedItem(schemaResult.data, lineNumber, siteConfig));
+
+		const item = schemaResult.data;
+		errors.push(...validateAnnotatedItem(item, lineNumber, siteConfig));
+
+		const firstLine = seenIds.get(item.id);
+		if (firstLine !== undefined) {
+			errors.push({
+				lineNumber,
+				message: `Duplicate id "${item.id}" (first seen at line ${firstLine})`,
+			});
+		} else {
+			seenIds.set(item.id, lineNumber);
+		}
 	}
 
 	return errors;
@@ -270,31 +283,38 @@ function compareForHomepage(a: AggregatedItem, b: AggregatedItem): number {
 	return compareByScore(a, b, (item) => item.homepage_score);
 }
 
-const DEFAULT_CANDIDATE_RATIO = 0.2;
-const DEFAULT_MAX_CANDIDATES = 50;
-const DEFAULT_INITIAL_MIN_SCORE = 4;
+/** Aggregation tunables used to size the candidate pool. */
+interface CandidateAggregationConfig {
+	candidate_ratio: number;
+	max_candidates: number;
+	initial_score_threshold: number;
+}
 
-function computeCandidateTarget(count: number): number {
+function computeCandidateTarget(count: number, config: CandidateAggregationConfig): number {
 	if (count <= 0) return 0;
-	return Math.min(Math.max(1, Math.ceil(count * DEFAULT_CANDIDATE_RATIO)), DEFAULT_MAX_CANDIDATES);
+	return Math.min(Math.max(1, Math.ceil(count * config.candidate_ratio)), config.max_candidates);
 }
 
 /**
  * Select the candidate pool for homepage or a single feed.
  *
- * Strategy (adaptive, no configuration):
- * 1. Target count = min(ceil(total × 20%), 50).
- * 2. Start with score >= 4.
+ * Strategy (adaptive, driven by `config`):
+ * 1. Target count = min(ceil(total × candidate_ratio), max_candidates).
+ * 2. Start with score >= initial_score_threshold.
  * 3. If too few items meet that bar, lower the threshold by 1 repeatedly
  *    until we have enough items or reach score >= 1.
  * 4. Sort the surviving pool by score descending with tie-breakers and
  *    return the top `target` items.
  */
-function selectCandidates(items: AggregatedItem[], getScore: (item: AggregatedItem) => number): AggregatedItem[] {
-	const target = computeCandidateTarget(items.length);
+function selectCandidates(
+	items: AggregatedItem[],
+	getScore: (item: AggregatedItem) => number,
+	config: CandidateAggregationConfig,
+): AggregatedItem[] {
+	const target = computeCandidateTarget(items.length, config);
 	if (target === 0) return [];
 
-	let minScore = DEFAULT_INITIAL_MIN_SCORE;
+	let minScore = config.initial_score_threshold;
 	let pool = items;
 
 	while (minScore > 1) {
@@ -395,9 +415,9 @@ export function buildSourcesJson(
  */
 export function buildHomepageJson(
 	items: AggregatedItem[],
-	_siteConfig: SiteConfig,
+	siteConfig: SiteConfig,
 ): import("../types/daily-site.js").HomepageOutput {
-	const sorted = selectCandidates(items, (item) => item.homepage_score);
+	const sorted = selectCandidates(items, (item) => item.homepage_score, siteConfig.pipeline.aggregation);
 	const candidates = sorted.map((item, index) => ({
 		item_id: item.id,
 		title: item.title,
@@ -428,7 +448,11 @@ export function buildFeedsJson(
 	siteConfig: SiteConfig,
 ): import("../types/daily-site.js").FeedsOutput {
 	const feeds = siteConfig.feeds.map((feed) => {
-		const sorted = selectCandidates(items, (item) => item.feed_scores[feed.id]?.score ?? 0);
+		const sorted = selectCandidates(
+			items,
+			(item) => item.feed_scores[feed.id]?.score ?? 0,
+			siteConfig.pipeline.aggregation,
+		);
 		const candidates = sorted.map((item, index) => {
 			const feedScore = item.feed_scores[feed.id] ?? { score: 0, reason: "" };
 			return {
@@ -554,6 +578,16 @@ export async function runDailySiteAggregate(
 	}
 
 	const { items, skippedCount } = buildItemsJsonl(mergedItems, annotatedItems);
+
+	if (mergedItems.length > 0) {
+		const rowCountDiff = Math.abs(annotatedItems.length - mergedItems.length) / mergedItems.length;
+		if (rowCountDiff > 0.2) {
+			logger.warn(
+				`Row count mismatch: annotated.jsonl has ${annotatedItems.length} rows, merged.jsonl has ${mergedItems.length} rows (difference ${(rowCountDiff * 100).toFixed(0)}%)`,
+			);
+		}
+	}
+
 	const sources = buildSourcesJson(items, collectPlan);
 	const homepage = buildHomepageJson(items, siteConfig);
 	const feeds = buildFeedsJson(items, siteConfig);

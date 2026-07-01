@@ -44,6 +44,11 @@ function writeAnnotated(archiveDir: string, items: AnnotatedItem[]): void {
 	writeFileSync(path.join(archiveDir, "annotated.jsonl"), content, "utf-8");
 }
 
+function writeMerged(archiveDir: string, items: unknown[]): void {
+	const content = `${items.map((item) => JSON.stringify(item)).join("\n")}\n`;
+	writeFileSync(path.join(archiveDir, "merged.jsonl"), content, "utf-8");
+}
+
 describe("runDailySiteAggregate", () => {
 	let tempDir: string;
 	const date = "2026-06-25";
@@ -222,5 +227,60 @@ describe("runDailySiteAggregate", () => {
 
 		expect(result.itemsCount).toBe(10);
 		expect(result.skippedCount).toBe(1);
+	});
+
+	it("reports duplicate id values as validation errors", async () => {
+		copyFixtures(tempDir, date);
+		const archiveDir = path.join(tempDir, date);
+		const baseItems = readJsonl(path.join(archiveDir, "annotated.jsonl")) as AnnotatedItem[];
+		const duplicateId = baseItems[0]?.id ?? "duplicate:id";
+		const secondItem = baseItems[1];
+		expect(secondItem).toBeDefined();
+		baseItems[1] = { ...secondItem, id: duplicateId };
+		writeAnnotated(archiveDir, baseItems);
+
+		await expect(
+			runDailySiteAggregate({
+				dataDir: tempDir,
+				date,
+				siteConfigPath: SITE_CONFIG_PATH,
+				collectPlan: COLLECT_PLAN,
+			}),
+		).rejects.toThrow(/annotated\.jsonl validation failed/);
+
+		await expect(
+			runDailySiteAggregate({
+				dataDir: tempDir,
+				date,
+				siteConfigPath: SITE_CONFIG_PATH,
+				collectPlan: COLLECT_PLAN,
+			}),
+		).rejects.toThrow(new RegExp(`Duplicate id "${duplicateId}"`));
+	});
+
+	it("warns when annotated and merged row counts differ by more than 20%", async () => {
+		copyFixtures(tempDir, date);
+		const archiveDir = path.join(tempDir, date);
+		const baseMerged = readJsonl(path.join(archiveDir, "merged.jsonl"));
+		// Drop 25% of merged rows so the difference exceeds the 20% threshold.
+		writeMerged(archiveDir, baseMerged.slice(0, -3));
+
+		const warnings: string[] = [];
+		const logger = {
+			log: () => {},
+			error: () => {},
+			warn: (message: string) => warnings.push(message),
+			info: () => {},
+		};
+
+		await runDailySiteAggregate({
+			dataDir: tempDir,
+			date,
+			siteConfigPath: SITE_CONFIG_PATH,
+			collectPlan: COLLECT_PLAN,
+			logger,
+		});
+
+		expect(warnings.some((message) => /Row count mismatch/.test(message))).toBe(true);
 	});
 });
