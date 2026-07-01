@@ -110,7 +110,27 @@ anytrend build --archive-date <DATE>
 | ... | ... | ... |
 | M | 第 (M-1)×batch_size+1 行 ～ 第 N 行 | `tmp/annotated-{start}-{N}.jsonl` |
 
-### 2.2 并发调度
+### 2.2 汇报执行计划
+
+在启动 subagent 之前，向用户汇报以下内容。汇报后直接继续，无需等待确认。
+
+| 项目 | 值 |
+|---|---|
+| 总条目数 | `merged.jsonl` 行数 N |
+| 标注模型 | `{site.pipeline.annotation.model}` |
+| Batch 配置 | 每批 `{site.pipeline.annotation.batch_size}` 条 |
+| Batch 总数 | M = ceil(N / batch_size) |
+| 最大并发 | `{site.pipeline.annotation.max_concurrency}` |
+| 执行轮数 | ceil(M / max_concurrency)，列出每轮 batch 分布 |
+| 单 Batch 预估 token | 提示词字符数 + 输入数据行字符数 + 输出经验值（~800 字符/条 × batch_size） |
+| 总预估 token | 单 Batch 预估 × M |
+| 标注任务 | 分类（{site.categories} 共 X 类）+ 翻译目标语言 {site.translation.target_language} + 首页评分 + Feed 评分（{site.feeds} 共 X 个 feed） |
+
+**Token 上限：** 标注阶段涉及大量 subagent 并发调用，每个 subagent 处理多条数据并输出结构化结果，单 batch 消耗可能很高。加上 subagent 可能在边缘 case 上反复推敲，存在 token 浪费和死循环风险。需设定上限兜底。
+
+实现方式：检查当前 Agent 环境是否提供 token 预算机制（如 session 级上限、budget 参数等）。如有，将上限值与预估总消耗对比，超出则提示用户调整 `batch_size` 或 `max_concurrency`。如无内置机制，设定硬上限：单 batch 不超过 150K tokens。在构造 subagent 提示词时注入 `{token_limit}` 变量告知该上限。
+
+### 2.3 并发调度
 
 最多 `{site.pipeline.annotation.max_concurrency}` 个 subagent 并发。每个 subagent 分配一个 batch，传入以下参数替换提示词模板中的变量：
 
@@ -123,12 +143,13 @@ anytrend build --archive-date <DATE>
 | `{site.categories}` | site.yaml | 全部分类（id / name / definition） |
 | `{site.homepage.criteria}` | site.yaml | 首页打分标准 |
 | `{site.feeds}` | site.yaml | 全部 feed 定义（id / title / criteria） |
+| `{token_limit}` | 2.2 确定的预算上限 | 单 batch token 上限值 |
 
 所有 subagent 通过 Agent 工具的 `model` 参数显式传入 `{site.pipeline.annotation.model}`。
 
 如果 batch 总数超过 `{site.pipeline.annotation.max_concurrency}`，分轮执行：每轮最多 max_concurrency 个并发，等当前轮全部完成后再启动下一轮。
 
-### 2.3 Subagent 提示词模板
+### 2.4 Subagent 提示词模板
 
 以下为传给每个 subagent 的完整提示词。用 `~~~subagent` 围栏标记，你替换所有变量后原样传递。
 
@@ -197,6 +218,8 @@ anytrend build --archive-date <DATE>
 8. 输出文件必须是合法 JSONL，每行一个紧凑 JSON，不要加 Markdown 代码块或其他说明文字。
 9. 使用 1–5 分绝对尺度，不要因为当前 batch 内部的好坏而刻意拔高或压低分数。
 10. 控制输出长度：`category_reason` 和 `feed_scores.*.reason` 限制在 50 字以内；`homepage_reason` 限制在 60 字以内；`summary` 限制在 150 字以内。简要说明理由即可，下游只消费分数和分类，不消费大段文字。
+11. 一次性读入全部条目后，在单次分析中完成所有标注判断，不要在对话中逐条输出每个条目的分析过程。直接产出最终的 JSONL 结果。
+12. 有不确定的分类或评分时做出最优判断即可，不反复推敲。整个 batch 在 3 轮交互内完成（读入 → 分析标注 → 写入自检）。
 
 ## 代码要求
 
@@ -205,7 +228,7 @@ anytrend build --archive-date <DATE>
 按以下方式生成输出文件：
 
 1. 用代码读取 `{input_file_path}` 的指定行范围，解析为对象数组。
-2. 对每条输入，根据你的判断确定标注字段：`category_id`、`category_reason`、翻译后的 `title`/`summary`、`homepage_score`、`homepage_reason`、`feed_scores`。
+2. 在单次分析中对所有条目逐一判断标注字段：`category_id`、`category_reason`、翻译后的 `title`/`summary`、`homepage_score`、`homepage_reason`、`feed_scores`。禁止在对话中逐条展开分析，直接产出最终结果。
 3. 将输入行的 `id` 与你的判断结果组合为一个输出对象。所有输出对象按输入顺序放入数组。
 4. 执行下面的自检步骤。
 5. 自检通过后，用 `JSON.stringify` 把数组序列化为合法 JSONL（每行一个紧凑 JSON）。
@@ -227,13 +250,17 @@ anytrend build --archive-date <DATE>
 
 格式校验（category_id 合法性、score 范围、feed 覆盖、reason 类型等）由后续 `anytrend daily-site aggregate` 命令完成，你不需要自己做。
 
+## Token 限制
+
+为防止标注过程消耗失控或陷入死循环，本次任务设 token 上限：{token_limit}。处理数据时控制分析粒度，不要逐条在对话中展开讨论。达到上限仍未完成时，输出当前已完成部分并说明未完成条目，标记为失败，不要无限重试。
+
 ## 返回要求
 
 - 如果全部成功：返回"已完成"，简要说明处理过程中遇到的特殊情况（如某些条目 summary 为空、语言难以判断、分类边界模糊等）。
 - 如果失败：返回"失败"，说明原因以及你已经尝试过的解决办法。
 ~~~
 
-### 2.4 合并与过滤
+### 2.5 合并与过滤
 
 所有 batch 完成后，你编写并执行一个 Node.js 脚本：
 
@@ -243,7 +270,7 @@ anytrend build --archive-date <DATE>
 4. 过滤：丢弃 `homepage_score === 1` 的条目。
 5. 将保留的条目按顺序写入 `anytrend-data/daily/<DATE>/annotated.jsonl`（合法 JSONL，每行一个紧凑 JSON，无多余空行）。
 
-### 2.5 合并检查
+### 2.6 合并检查
 
 合并脚本中额外执行以下检查：
 
@@ -256,7 +283,7 @@ anytrend build --archive-date <DATE>
 
 id 合法性、JSON 格式等校验由后续 `anytrend daily-site aggregate` 命令完成。
 
-### 2.6 抽样审查
+### 2.7 抽样审查
 
 合并检查通过后，你编写 Node.js 脚本从 `annotated.jsonl` 中随机抽取 5–10 条，逐条审查：
 
@@ -272,7 +299,7 @@ id 合法性、JSON 格式等校验由后续 `anytrend daily-site aggregate` 命
 - **偶发个例**：直接改动对应条目的字段，写回 `annotated.jsonl`。
 - **系统性偏差**（如某个 batch 整体打分偏高/偏低 1 分以上）：标记该 batch，要求对应 subagent 全部重做。
 
-### 2.7 清理
+### 2.8 清理
 
 - 删除 `anytrend-data/daily/<DATE>/tmp/` 目录及其所有内容。
 - 删除合并脚本和抽样脚本文件。
