@@ -15,6 +15,24 @@ function formatVotes(value: unknown): string | null {
 	return `${value} votes`;
 }
 
+const MAX_TAGLINE_LENGTH = 80;
+
+/**
+ * Build a self-explanatory title from the product name and its tagline.
+ *
+ * Product Hunt titles are often just product names (e.g. "jebi"), which are
+ * hard to understand without context. Appending the tagline makes the entry
+ * readable on pages that only show the title, while keeping the description
+ * short enough to avoid layout issues.
+ */
+function buildTitle(name: string, tagline: string | null): string {
+	if (!tagline) {
+		return name;
+	}
+	const shortTagline = tagline.length > MAX_TAGLINE_LENGTH ? `${tagline.slice(0, MAX_TAGLINE_LENGTH)}…` : tagline;
+	return `${name} — ${shortTagline}`;
+}
+
 // ---------------------------------------------------------------------------
 // Adapter
 // ---------------------------------------------------------------------------
@@ -31,9 +49,11 @@ export default defineAdapter({
 	},
 
 	mapItem(entry, context) {
-		const title = cleanText(entry.title);
-		if (!title) return null;
+		const name = cleanText(entry.title);
+		if (!name) return null;
 
+		const tagline = cleanText(entry.tagline);
+		const title = buildTitle(name, tagline);
 		const rank = typeof entry.rank === "number" ? entry.rank : null;
 		const heat_raw = parseHeat(entry.votes)[1];
 		const heat = formatVotes(entry.votes);
@@ -45,7 +65,7 @@ export default defineAdapter({
 			url: cleanText(entry.url),
 			heat,
 			heat_raw,
-			summary: cleanText(entry.tagline),
+			summary: tagline,
 			tags: toArray(entry.topics),
 		};
 	},
