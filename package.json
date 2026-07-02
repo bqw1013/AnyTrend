@@ -1,6 +1,6 @@
 {
 	"name": "anytrend",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "AI-driven daily trend aggregation command library for Chinese and English hot rankings.",
 	"type": "module",
 	"main": "dist/index.js",
