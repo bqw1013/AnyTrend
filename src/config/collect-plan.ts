@@ -341,15 +341,6 @@ export const COLLECT_PLAN: CollectCall[] = [
 		requiresLogin: false,
 	},
 	{
-		command: "qbitai/get-latest",
-		platform: "qbitai",
-		args: ["--limit", "20", "--includeFeatured", "true"],
-		angle: "量子位精选",
-		outputName: "qbitai-get-latest-featured",
-		requiresBrowser: true,
-		requiresLogin: false,
-	},
-	{
 		command: "maimai/get-hot",
 		platform: "maimai",
 		args: ["--limit", "15"],
