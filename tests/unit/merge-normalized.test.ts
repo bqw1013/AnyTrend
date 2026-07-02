@@ -137,3 +137,83 @@ describe("runMerge collection report item_count", () => {
 		expect(report.calls[0]?.item_count).toBe(7);
 	});
 });
+
+describe("runMerge duplicate handling", () => {
+	let tempDir: string;
+	let normalizedDir: string;
+	let outputDir: string;
+
+	beforeEach(() => {
+		tempDir = mkdtempSync(path.join(os.tmpdir(), "anytrend-merge-dedup-"));
+		normalizedDir = path.join(tempDir, "normalized");
+		outputDir = path.join(tempDir, "daily");
+		mkdirSync(normalizedDir, { recursive: true });
+	});
+
+	afterEach(() => {
+		rmSync(tempDir, { recursive: true, force: true });
+	});
+
+	it("deduplicates items by id across normalized files", async () => {
+		const sharedItem = {
+			id: "qbitai:_:1:shared-title",
+			rank: 1,
+			title: "Shared title",
+			url: "https://example.com/shared",
+			heat: null,
+			heat_raw: null,
+			summary: "A shared article",
+			tags: ["ai"],
+		};
+
+		writeFileSync(
+			path.join(normalizedDir, "qbitai-get-latest.json"),
+			JSON.stringify(
+				makeOutput({
+					command: "qbitai/get-latest",
+					platform: "qbitai",
+					language: "zh",
+					category: "zh-ai",
+					board_type: "latest",
+					items: [sharedItem],
+				}),
+			),
+		);
+		writeFileSync(
+			path.join(normalizedDir, "qbitai-get-latest-featured.json"),
+			JSON.stringify(
+				makeOutput({
+					command: "qbitai/get-latest",
+					platform: "qbitai",
+					language: "zh",
+					category: "zh-ai",
+					board_type: "latest",
+					items: [sharedItem],
+				}),
+			),
+		);
+
+		const { merged, report } = await runMerge(normalizedDir, outputDir, "2026-06-17");
+
+		expect(merged.items).toHaveLength(1);
+		expect(merged.meta.total_items).toBe(1);
+		expect(merged.meta.duplicate_count).toBe(1);
+		expect(report.total_items).toBe(1);
+		expect(report.duplicate_count).toBe(1);
+
+		const jsonlLines = readFileSync(path.join(outputDir, "merged.jsonl"), "utf-8")
+			.trim()
+			.split("\n")
+			.filter((line) => line.length > 0);
+		expect(jsonlLines).toHaveLength(1);
+
+		const meta = JSON.parse(readFileSync(path.join(outputDir, "meta.json"), "utf-8")) as typeof merged;
+		expect(meta.meta.duplicate_count).toBe(1);
+		expect(meta.meta.total_items).toBe(1);
+
+		const persistedReport = JSON.parse(
+			readFileSync(path.join(outputDir, "collection-report.json"), "utf-8"),
+		) as typeof report;
+		expect(persistedReport.duplicate_count).toBe(1);
+	});
+});

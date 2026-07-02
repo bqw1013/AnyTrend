@@ -35,6 +35,7 @@ export interface MergedDailyOutput {
 		successful_calls: number;
 		failed_calls: number;
 		total_items: number;
+		duplicate_count: number;
 	};
 	items: MergedItem[];
 }
@@ -48,6 +49,7 @@ export interface CollectionReport {
 	successful_calls: number;
 	failed_calls: number;
 	total_items: number;
+	duplicate_count: number;
 	calls: Array<{
 		command: string;
 		angle: string;
@@ -104,8 +106,8 @@ export async function runMerge(
 		.filter((f) => f.endsWith(".json"))
 		.sort();
 
-	let totalItems = 0;
-	const items: MergedItem[] = [];
+	const itemsById = new Map<string, MergedItem>();
+	let duplicateCount = 0;
 	const digestDir = path.join(outDir, "digest");
 	mkdirSync(digestDir, { recursive: true });
 
@@ -154,13 +156,18 @@ export async function runMerge(
 		}
 
 		for (const item of output.items) {
-			items.push({
+			if (itemsById.has(item.id)) {
+				duplicateCount++;
+				log.warn(
+					`SKIP duplicate item ${item.id} from ${file} (already seen in ${itemsById.get(item.id)?._source.normalized_file})`,
+				);
+				continue;
+			}
+			itemsById.set(item.id, {
 				...item,
 				_source: { ...sourceMeta },
 			});
 		}
-		totalItems += output.items.length;
-
 		const outputName = file.replace(/\.json$/, "");
 		normalizedItemCounts.set(outputName, output.items.length);
 		try {
@@ -178,6 +185,9 @@ export async function runMerge(
 	const totalCalls = callResults?.length ?? files.length;
 	const successfulCallsReport = callResults ? successfulCalls : files.length;
 
+	const items = Array.from(itemsById.values());
+	const totalItems = items.length;
+
 	const merged: MergedDailyOutput = {
 		version: "1.0",
 		date,
@@ -187,6 +197,7 @@ export async function runMerge(
 			successful_calls: successfulCallsReport,
 			failed_calls: failedCalls,
 			total_items: totalItems,
+			duplicate_count: duplicateCount,
 		},
 		items,
 	};
@@ -200,6 +211,7 @@ export async function runMerge(
 		successful_calls: successfulCallsReport,
 		failed_calls: failedCalls,
 		total_items: totalItems,
+		duplicate_count: duplicateCount,
 		calls:
 			callResults?.map((r) => ({
 				command: r.call.command,
